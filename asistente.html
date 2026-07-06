@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Asistente de Voz IA | Serenity Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --gold:#C9A961;--gold-deep:#A8883F;--bg:#0E0F0D;
+            --bg-card:rgba(22,24,20,.82);--text:#F5F2EB;
+            --text-muted:rgba(245,242,235,.35);--border:rgba(255,255,255,.06);
+            --gold-line:rgba(201,168,122,0.3);
+            --gold-dim:rgba(201,168,122,0.12);
+        }
+        body{
+            font-family:'DM Sans',sans-serif;background:var(--bg);
+            min-height:100dvh;display:flex;align-items:center;justify-content:center;
+            padding:1rem;
+        }
+        .card{
+            height:45rem;
+            width:100%;max-width:480px;background:var(--bg-card);
+            backdrop-filter:blur(28px);border-radius:40px;
+            border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;
+        }
+        .header{
+            padding:1.5rem 1.75rem;border-bottom:1px solid var(--border);
+            text-align:center;position:relative;
+        }
+        .avatar{
+            width:70px;height:70px;border-radius:50%;
+            background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto;box-shadow:0 8px 32px rgba(201,169,97,.35);
+            transition:all .3s; margin-bottom:0.5rem;
+            overflow:hidden;
+            position:relative;
+        }
+        .avatar img{width:100%;height:100%;object-fit:cover;}
+        .avatar i{font-size:2.5rem;color:white;}
+        .avatar .user-avatar{
+            width:100%;height:100%;object-fit:cover;
+        }
+        .title{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);}
+        .subtitle{font-size:.7rem;color:var(--text-muted);margin-top:.25rem;}
+        .status{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .9rem;border-radius:40px;background:rgba(255,255,255,.05);font-size:.7rem;color:var(--text);margin-top:.5rem;}
+        .dot{width:7px;height:7px;border-radius:50%;}
+        .dot.online{background:#6DB98C;animation:blink 1s infinite alternate;}
+        .dot.thinking{background:#C9A961;animation:blink 1s infinite alternate;}
+        .dot.listening{background:#e74c3c;animation:pulse 0.5s infinite alternate;}
+        .dot.error{background:#e74c3c;animation:blink 0.5s infinite alternate;}
+        @keyframes blink{from{opacity:1}to{opacity:.35}}
+        @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.3)}}
+        
+        .conversation{
+            flex:1;overflow-y:auto;padding:1rem;
+            display:flex;flex-direction:column;gap:.9rem;
+        }
+        .conversation::-webkit-scrollbar{width:4px;}
+        .conversation::-webkit-scrollbar-track{background:transparent;}
+        .conversation::-webkit-scrollbar-thumb{background:var(--gold-line);border-radius:2px;}
+        
+        .message{display:flex;gap:.6rem;align-items:flex-end}
+        .message.user{flex-direction:row-reverse}
+        .msg-pip{
+            width:32px;height:32px;border-radius:50%;
+            background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+            display:flex;align-items:center;justify-content:center;
+            font-size:.65rem;color:white;flex-shrink:0;
+            overflow:hidden;
+        }
+        .msg-pip img{width:100%;height:100%;object-fit:cover;}
+        .message.user .msg-pip{
+            background:rgba(255,255,255,.1);
+            color:var(--gold);
+            font-weight:700;
+            font-size:.7rem;
+        }
+        .message.user .msg-pip.has-avatar{
+            background:transparent;
+            border:2px solid var(--gold);
+            padding:0;
+        }
+        .message.user .msg-pip.has-avatar img{
+            width:100%;height:100%;object-fit:cover;
+            border-radius:50%;
+        }
+        .bubble{
+            max-width:80%;padding:.65rem 1rem;border-radius:18px;
+            font-size:.84rem;line-height:1.55;color:var(--text);
+            word-wrap:break-word;
+        }
+        .message.bot .bubble{
+            background:rgba(255,255,255,.07);border:1px solid var(--border);
+            border-bottom-left-radius:4px;white-space:pre-line;
+        }
+        .message.user .bubble{
+            background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+            color:#1A160A;font-weight:500;border-bottom-right-radius:4px;
+        }
+        
+        .rating-container{display:flex;gap:0.5rem;justify-content:center;margin-top:0.5rem;}
+        .star-btn{background:none;border:none;font-size:2.5rem;color:var(--text-muted);cursor:pointer;transition:color 0.2s, transform 0.2s;}
+        .star-btn.active{color:var(--gold);}
+        .star-btn:hover{transform:scale(1.2);}
+        .star-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+        .btn-confirm-stars{
+            display:block;
+            margin:0.8rem auto 0;
+            padding:0.4rem 1.5rem;
+            border-radius:40px;
+            border:1px solid var(--gold);
+            background:var(--gold);
+            color:#1A160A;
+            cursor:pointer;
+            font-weight:600;
+            font-size:.85rem;
+            transition:all .2s;
+            font-family:inherit;
+        }
+        .btn-confirm-stars:hover{background:var(--gold-deep);transform:scale(1.05);}
+        .btn-confirm-stars:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+        
+        .controls{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:0.5rem;}
+        .btn-back{padding:.5rem 1rem;border-radius:40px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--text);text-decoration:none;font-size:.8rem;transition:all .2s;}
+        .btn-back:hover{background:rgba(255,255,255,.12)}
+        
+        .input-area{display:flex;gap:.5rem;flex:1;margin:0 0.5rem;}
+        .input-area input{flex:1;padding:.6rem .8rem;border-radius:40px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--text);font-family:inherit;font-size:.85rem;outline:none;transition:border-color .2s;}
+        .input-area input:focus{border-color:var(--gold);}
+        .input-area input:disabled{opacity:0.5;cursor:not-allowed;}
+        .input-area button{padding:.6rem 1.2rem;border-radius:40px;background:var(--gold);border:none;color:#1A160A;cursor:pointer;font-weight:600;font-size:.8rem;transition:all .2s;font-family:inherit;}
+        .input-area button:hover{background:var(--gold-deep);transform:scale(1.02);}
+        .input-area button:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+        
+        .btn-mode{
+            padding:.5rem .8rem;
+            border-radius:40px;
+            border:1px solid var(--border);
+            background:transparent;
+            color:var(--text-muted);
+            cursor:pointer;
+            transition:all .2s;
+            font-size:.8rem;
+            font-family:inherit;
+        }
+        .btn-mode.active{
+            border-color:var(--gold);
+            color:var(--gold);
+            background:var(--gold-dim);
+        }
+        .btn-mode:hover{color:var(--text);border-color:var(--text-muted);}
+        
+        .btn-option{
+            padding:.5rem 1.2rem;
+            border-radius:40px;
+            border:1px solid var(--gold-line);
+            background:transparent;
+            color:var(--text);
+            cursor:pointer;
+            transition:all .2s;
+            font-family:inherit;
+            font-size:.85rem;
+            margin-top:.5rem;
+            display:inline-block;
+        }
+        .btn-option:hover{
+            background:var(--gold-dim);
+            border-color:var(--gold);
+            color:var(--gold-light);
+        }
+        
+        .upload-area{
+            border:2px dashed var(--gold-line);
+            border-radius:12px;
+            padding:1rem;
+            text-align:center;
+            cursor:pointer;
+            transition:all .2s;
+            margin-top:.5rem;
+        }
+        .upload-area:hover{border-color:var(--gold);background:var(--gold-dim);}
+        .upload-area i{font-size:1.5rem;color:var(--gold);margin-bottom:.3rem;}
+        .upload-area p{font-size:.75rem;color:var(--text-muted);}
+        
+        .typing-indicator{
+            display:flex;gap:4px;padding:8px 12px;
+            background:rgba(255,255,255,.07);border-radius:18px;
+            align-items:center;border:1px solid var(--border);
+            width:fit-content;
+        }
+        .typing-indicator span{
+            width:6px;height:6px;border-radius:50%;
+            background:var(--text-muted);display:block;
+            animation:typing 1.4s infinite both;
+        }
+        .typing-indicator span:nth-child(2){animation-delay:0.2s;}
+        .typing-indicator span:nth-child(3){animation-delay:0.4s;}
+        @keyframes typing{
+            0%,80%,100%{transform:scale(0.4);opacity:0.3;}
+            40%{transform:scale(1);opacity:1;}
+        }
+        
+        @media(max-width:520px){
+            .card{border-radius:24px;height:42rem;}
+            .controls{padding:0.8rem 1rem;flex-wrap:wrap;}
+            .input-area{margin:0 0.5rem;}
+            .btn-mode{font-size:.7rem;padding:.4rem .6rem;}
+        }
+    </style>
+</head>
+<body>
+
+<main class="card">
+    <header class="header">
+        <div class="avatar" id="avatarEl">
+            <i class="fas fa-robot"></i>
+        </div>
+        <h1 class="title" id="asistenteNombre">Asistente Serenity</h1>
+        <p class="subtitle" id="subtitleUser">Tu asistente personal de bienestar</p>
+        <div class="status">
+            <span class="dot online" id="statusDot"></span>
+            <span id="statusText">Conectado</span>
+        </div>
+    </header>
+    
+    <section class="conversation" id="conversation">
+        <!-- Mensajes -->
+    </section>
+    
+    <div class="controls">
+        <a href="/" class="btn-back">← Volver</a>
+        
+        <div class="input-area">
+            <input type="text" id="textInput" placeholder="Escribe o habla..." />
+            <button id="btnSendText"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        
+        <button class="btn-mode" id="btnMic" title="Modo voz">
+            <i class="fas fa-microphone"></i>
+        </button>
+    </div>
+</main>
+
+<script>
+    // ============================================================
+    // CONFIGURACIÓN Y VARIABLES GLOBALES
+    // ============================================================
+    const conversation = document.getElementById('conversation');
+    const textInput = document.getElementById('textInput');
+    const btnSend = document.getElementById('btnSendText');
+    const btnMic = document.getElementById('btnMic');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const avatarEl = document.getElementById('avatarEl');
+    const subtitleUser = document.getElementById('subtitleUser');
+    const asistenteNombreEl = document.getElementById('asistenteNombre');
+    
+    // Datos del usuario
+    let nombreUsuario = sessionStorage.getItem('userNombre') || 'Usuario';
+    let emailUsuario = sessionStorage.getItem('userEmail') || '';
+    let avatarUsuario = sessionStorage.getItem('userAvatar') || null;
+    let tokenUsuario = sessionStorage.getItem('userToken') || null;
+    
+    const nombreWeb = 'Serenity Spa';
+    let nombreAsistente = 'Asistente Serenity';
+    const IMAGEN_BOT = 'https://i.postimg.cc/hz1zW7dg/1781383382370.webp';
+    
+    // Estado de la conversación
+    let estadoConversacion = 'inicio';
+    let calificacionSeleccionada = 0;
+    let comentarioUsuario = '';
+    let testimonioPublico = false;
+    let imagenUsuario = null;
+    let modoVoz = false;
+    let reconocimiento = null;
+    let esperandoRespuesta = false;
+    let usuarioVerificado = false;
+
+    // ============================================================
+    // FUNCIONES DE AUTENTICACIÓN
+    // ============================================================
+    function getToken() {
+        return sessionStorage.getItem('userToken') || null;
+    }
+
+    async function verificarSesion() {
+        const token = getToken();
+        if (!token) {
+            console.log('🔑 No hay token de sesión');
+            return false;
+        }
+        try {
+            const res = await fetch('/api/verify/user', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            if (data.valid) {
+                nombreUsuario = sessionStorage.getItem('userNombre') || 'Usuario';
+                emailUsuario = sessionStorage.getItem('userEmail') || '';
+                avatarUsuario = sessionStorage.getItem('userAvatar') || null;
+                usuarioVerificado = true;
+                console.log('✅ Sesión verificada para:', nombreUsuario);
+                return true;
+            } else {
+                sessionStorage.removeItem('userToken');
+                sessionStorage.removeItem('userNombre');
+                sessionStorage.removeItem('userEmail');
+                sessionStorage.removeItem('userAvatar');
+                usuarioVerificado = false;
+                return false;
+            }
+        } catch (e) {
+            console.warn('Error verificando sesión:', e);
+            return false;
+        }
+    }
+
+    // ============================================================
+    // CARGAR NOMBRE DEL ASISTENTE DESDE EL ADMIN
+    // ============================================================
+    async function cargarNombreAsistente() {
+        try {
+            const response = await fetch('/api/ia/personalidad');
+            if (response.ok) {
+                const iaData = await response.json();
+                if (iaData.nombre && iaData.nombre.trim()) {
+                    nombreAsistente = iaData.nombre.trim();
+                    asistenteNombreEl.textContent = nombreAsistente;
+                    console.log('✅ Nombre del asistente cargado:', nombreAsistente);
+                }
+            }
+        } catch (e) {
+            console.warn('Error cargando nombre del asistente:', e);
+        }
+    }
+
+    // ============================================================
+    // ACTUALIZAR AVATAR DEL ASISTENTE (SIEMPRE EL LOGO)
+    // ============================================================
+    function actualizarAvatarAsistente() {
+        avatarEl.innerHTML = `<img src="${IMAGEN_BOT}" alt="${nombreAsistente}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-robot\\'></i>'">`;
+    }
+
+    // ============================================================
+    // FUNCIONES DE MENSAJES
+    // ============================================================
+    function agregarMensaje(remitente, texto, esHTML = false) {
+        const div = document.createElement('div');
+        div.className = `message ${remitente}`;
+        
+        const pip = document.createElement('div');
+        pip.className = 'msg-pip';
+        
+        if (remitente === 'bot') {
+            pip.innerHTML = `<img src="${IMAGEN_BOT}" alt="${nombreAsistente}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-robot\\'></i>'">`;
+        } else {
+            const userAvatar = sessionStorage.getItem('userAvatar') || localStorage.getItem('userAvatar');
+            if (userAvatar && (userAvatar.startsWith('data:image') || userAvatar.startsWith('http'))) {
+                pip.className = 'msg-pip has-avatar';
+                pip.innerHTML = `<img src="${userAvatar}" alt="${nombreUsuario}" onerror="this.parentElement.textContent='${nombreUsuario.charAt(0).toUpperCase()}'">`;
+            } else {
+                pip.textContent = nombreUsuario.charAt(0).toUpperCase();
+            }
+        }
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        if (esHTML) {
+            bubble.innerHTML = texto;
+        } else {
+            bubble.textContent = texto;
+        }
+        
+        div.appendChild(pip);
+        div.appendChild(bubble);
+        conversation.appendChild(div);
+        conversation.scrollTop = conversation.scrollHeight;
+        
+        if (modoVoz && remitente === 'bot') {
+            leerTexto(texto);
+        }
+    }
+    
+    function mostrarEstadoPensando() {
+        statusDot.className = 'dot thinking';
+        statusText.textContent = 'Pensando...';
+    }
+    
+    function mostrarEstadoConectado() {
+        statusDot.className = 'dot online';
+        statusText.textContent = 'Conectado';
+    }
+    
+    function mostrarEstadoEscuchando() {
+        statusDot.className = 'dot listening';
+        statusText.textContent = 'Escuchando...';
+    }
+    
+    function mostrarEstadoError() {
+        statusDot.className = 'dot error';
+        statusText.textContent = 'Error';
+        setTimeout(mostrarEstadoConectado, 2000);
+    }
+    
+    function mostrarIndicadorEscritura() {
+        const div = document.createElement('div');
+        div.className = 'message bot';
+        div.id = 'typingIndicator';
+        
+        const pip = document.createElement('div');
+        pip.className = 'msg-pip';
+        pip.innerHTML = `<img src="${IMAGEN_BOT}" alt="${nombreAsistente}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-robot\\'></i>'">`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        
+        div.appendChild(pip);
+        div.appendChild(bubble);
+        conversation.appendChild(div);
+        conversation.scrollTop = conversation.scrollHeight;
+    }
+    
+    function eliminarIndicadorEscritura() {
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+
+    // ============================================================
+    // SISTEMA DE AUDIO (Voz)
+    // ============================================================
+    function leerTexto(texto) {
+        if (!('speechSynthesis' in window)) return;
+        
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'es-ES';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        
+        const voces = window.speechSynthesis.getVoices();
+        const vozEspañol = voces.find(v => v.lang.includes('es'));
+        if (vozEspañol) utterance.voice = vozEspañol;
+        
+        window.speechSynthesis.speak(utterance);
+    }
+    
+    function iniciarReconocimientoVoz() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.');
+            return;
+        }
+        
+        if (esperandoRespuesta) {
+            alert('Por favor, espera a que termine la respuesta actual.');
+            return;
+        }
+        
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        reconocimiento = new SpeechRecognition();
+        reconocimiento.lang = 'es-ES';
+        reconocimiento.continuous = false;
+        reconocimiento.interimResults = false;
+        reconocimiento.maxAlternatives = 1;
+        
+        reconocimiento.onstart = function() {
+            mostrarEstadoEscuchando();
+            btnMic.classList.add('active');
+            textInput.placeholder = '🎤 Escuchando...';
+        };
+        
+        reconocimiento.onresult = function(event) {
+            const texto = event.results[0][0].transcript;
+            textInput.value = texto;
+            textInput.placeholder = 'Escribe o habla...';
+            enviarMensaje();
+        };
+        
+        reconocimiento.onerror = function(event) {
+            console.warn('Error en reconocimiento de voz:', event.error);
+            mostrarEstadoConectado();
+            btnMic.classList.remove('active');
+            textInput.placeholder = 'Escribe o habla...';
+            
+            if (event.error === 'not-allowed') {
+                alert('Por favor, permite el acceso al micrófono para usar el modo voz.');
+            } else if (event.error === 'no-speech') {
+                btnMic.classList.remove('active');
+            } else {
+                mostrarEstadoError();
+            }
+        };
+        
+        reconocimiento.onend = function() {
+            mostrarEstadoConectado();
+            btnMic.classList.remove('active');
+            textInput.placeholder = 'Escribe o habla...';
+        };
+        
+        reconocimiento.start();
+    }
+    
+    function toggleModoVoz() {
+        modoVoz = !modoVoz;
+        if (modoVoz) {
+            btnMic.classList.add('active');
+            btnMic.title = 'Modo voz activado';
+            textInput.placeholder = 'Habla o escribe...';
+            setTimeout(() => {
+                if (modoVoz) iniciarReconocimientoVoz();
+            }, 300);
+        } else {
+            btnMic.classList.remove('active');
+            btnMic.title = 'Activar modo voz';
+            textInput.placeholder = 'Escribe o habla...';
+            if (reconocimiento) {
+                try { reconocimiento.stop(); } catch(e) {}
+            }
+        }
+    }
+
+    // ============================================================
+    // COMPONENTES UI PARA CALIFICACIÓN
+    // ============================================================
+    function mostrarOpcionesEstrellas() {
+        const div = document.createElement('div');
+        div.className = 'message bot';
+        
+        const pip = document.createElement('div');
+        pip.className = 'msg-pip';
+        pip.innerHTML = `<img src="${IMAGEN_BOT}" alt="${nombreAsistente}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-robot\\'></i>'">`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.style.textAlign = 'center';
+        
+        const texto = document.createElement('p');
+        texto.textContent = `¿Cuántas estrellas nos das ${nombreUsuario}? Haz clic en las estrellas y luego confirma.`;
+        texto.style.marginBottom = '0.5rem';
+        bubble.appendChild(texto);
+        
+        const container = document.createElement('div');
+        container.className = 'rating-container';
+        container.id = 'ratingContainer';
+        
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'star-btn';
+            btn.dataset.valor = i;
+            btn.innerHTML = '<i class="far fa-star"></i>';
+            btn.addEventListener('click', () => {
+                seleccionarEstrellas(i);
+            });
+            container.appendChild(btn);
+        }
+        
+        const btnConfirmar = document.createElement('button');
+        btnConfirmar.className = 'btn-confirm-stars';
+        btnConfirmar.id = 'btnConfirmStars';
+        btnConfirmar.textContent = '✅ Enviar calificación';
+        btnConfirmar.style.display = 'none';
+        btnConfirmar.addEventListener('click', confirmarCalificacion);
+        
+        bubble.appendChild(container);
+        bubble.appendChild(btnConfirmar);
+        div.appendChild(pip);
+        div.appendChild(bubble);
+        conversation.appendChild(div);
+        conversation.scrollTop = conversation.scrollHeight;
+        
+        window._ratingContainer = container;
+        window._confirmBtn = btnConfirmar;
+    }
+    
+    function seleccionarEstrellas(valor) {
+        calificacionSeleccionada = valor;
+        const stars = document.querySelectorAll('.star-btn');
+        stars.forEach((btn, index) => {
+            if (index < valor) {
+                btn.innerHTML = '<i class="fas fa-star"></i>';
+                btn.classList.add('active');
+            } else {
+                btn.innerHTML = '<i class="far fa-star"></i>';
+                btn.classList.remove('active');
+            }
+        });
+        
+        const confirmBtn = document.getElementById('btnConfirmStars');
+        if (confirmBtn) {
+            confirmBtn.style.display = 'block';
+            confirmBtn.disabled = false;
+        }
+    }
+    
+    function confirmarCalificacion() {
+        if (calificacionSeleccionada === 0) {
+            alert('Por favor, selecciona al menos una estrella.');
+            return;
+        }
+        
+        const confirmBtn = document.getElementById('btnConfirmStars');
+        if (confirmBtn) {
+            confirmBtn.style.display = 'none';
+            confirmBtn.disabled = true;
+        }
+        
+        document.querySelectorAll('.star-btn').forEach(btn => {
+            btn.disabled = true;
+        });
+        
+        const mensaje = '⭐'.repeat(calificacionSeleccionada) + ` (${calificacionSeleccionada}/5 estrellas)`;
+        agregarMensaje('user', mensaje);
+        
+        setTimeout(() => {
+            mostrarEstadoPensando();
+            mostrarIndicadorEscritura();
+            
+            setTimeout(() => {
+                eliminarIndicadorEscritura();
+                mostrarEstadoConectado();
+                const respuesta = `¡Gracias ${nombreUsuario} por valorarnos con ${calificacionSeleccionada} ${calificacionSeleccionada === 1 ? 'estrella' : 'estrellas'}! 🌟\n\n¿Podrías regalarnos un comentario acerca de tu experiencia? Por ejemplo: "Excelente sitio para reservar masajes, lo recomiendo 100%".`;
+                agregarMensaje('bot', respuesta);
+                estadoConversacion = 'esperando_comentario';
+            }, 1200);
+        }, 500);
+    }
+    
+    function mostrarOpcionPublicar() {
+        const div = document.createElement('div');
+        div.className = 'message bot';
+        
+        const pip = document.createElement('div');
+        pip.className = 'msg-pip';
+        pip.innerHTML = `<img src="${IMAGEN_BOT}" alt="${nombreAsistente}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-robot\\'></i>'">`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `
+            ¡Gracias ${nombreUsuario}! Tu comentario ha sido guardado exitosamente. 🙌
+            <br><br>
+            Nos gustaría hacer público tu comentario y tu calificación en nuestra web para que otros usuarios puedan ver tu experiencia.
+            <br><br>
+            <strong>¿Te gustaría que publiquemos tu testimonio?</strong>
+            <br><br>
+            <button class="btn-option" onclick="window.responderPublicar(true)">✅ Sí, publícalo</button>
+            <button class="btn-option" onclick="window.responderPublicar(false)" style="border-color:rgba(220,38,38,0.3);color:#f87171;">❌ No, gracias</button>
+        `;
+        
+        div.appendChild(pip);
+        div.appendChild(bubble);
+        conversation.appendChild(div);
+        conversation.scrollTop = conversation.scrollHeight;
+        estadoConversacion = 'esperando_publicar';
+    }
+    
+    window.responderPublicar = function(si) {
+        if (si) {
+            agregarMensaje('user', 'Sí, publícalo');
+            testimonioPublico = true;
+            
+            setTimeout(() => {
+                mostrarEstadoPensando();
+                mostrarIndicadorEscritura();
+                
+                setTimeout(() => {
+                    eliminarIndicadorEscritura();
+                    mostrarEstadoConectado();
+                    
+                    // Verificar si ya tiene avatar para no pedir imagen
+                    const avatarExistente = sessionStorage.getItem('userAvatar') || localStorage.getItem('userAvatar');
+                    const tieneAvatar = avatarExistente && (avatarExistente.startsWith('data:image') || avatarExistente.startsWith('http'));
+                    
+                    if (tieneAvatar) {
+                        // Si ya tiene avatar, guardar testimonio directamente
+                        guardarTestimonio(nombreUsuario, calificacionSeleccionada, comentarioUsuario, avatarExistente, testimonioPublico);
+                        agregarMensaje('bot', `¡Perfecto ${nombreUsuario}! Tu testimonio ha sido publicado exitosamente en nuestra web. 🌟\n\nTu experiencia ayudará a muchas personas a confiar en ${nombreWeb}. ¡Gracias por ser parte de nuestra comunidad! 🌿\n\nSi necesitas algo más, estoy aquí para ayudarte.`);
+                        estadoConversacion = 'inicio';
+                    } else {
+                        agregarMensaje('bot', `¡Excelente ${nombreUsuario}! Para completar tu perfil público, ¿podrías subir una foto de perfil? Esta imagen aparecerá junto a tu nombre y calificación en nuestra página principal.`);
+                        estadoConversacion = 'esperando_imagen';
+                        mostrarOpcionSubirImagen();
+                    }
+                }, 1200);
+            }, 500);
+        } else {
+            agregarMensaje('user', 'No, gracias');
+            testimonioPublico = false;
+            
+            setTimeout(() => {
+                mostrarEstadoPensando();
+                mostrarIndicadorEscritura();
+                
+                setTimeout(() => {
+                    eliminarIndicadorEscritura();
+                    mostrarEstadoConectado();
+                    guardarTestimonio(nombreUsuario, calificacionSeleccionada, comentarioUsuario, null, testimonioPublico);
+                    
+                    agregarMensaje('bot', `Entendido ${nombreUsuario}. Tu comentario quedará guardado en nuestros registros internos. ¡Gracias por tu tiempo y por ser parte de ${nombreWeb}! 🌿\n\nSi necesitas algo más, estoy aquí para ayudarte.`);
+                    estadoConversacion = 'inicio';
+                }, 1200);
+            }, 500);
+        }
+    };
+    
+    function mostrarOpcionSubirImagen() {
+        const div = document.createElement('div');
+        div.className = 'message bot';
+        
+        const pip = document.createElement('div');
+        pip.className = 'msg-pip';
+        pip.innerHTML = `<img src="${IMAGEN_BOT}" alt="${nombreAsistente}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-robot\\'></i>'">`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `
+            <p style="margin-bottom:0.5rem;">Sube tu foto de perfil. Esta imagen aparecerá junto a tu nombre y calificación en la página principal.</p>
+            <div class="upload-area" onclick="document.getElementById('imagenInput').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Haz clic para seleccionar tu foto</p>
+                <p style="font-size:.6rem;color:var(--text-muted);margin-top:.3rem;">JPG, PNG, WEBP (Máx 2MB)</p>
+                <input type="file" id="imagenInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+            </div>
+            <div id="previewImagen" style="display:none;margin-top:.5rem;text-align:center;">
+                <img id="imagenPreview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);">
+                <br>
+                <button class="btn-option" onclick="window.confirmarImagen()" style="margin-top:.5rem;">✅ Confirmar imagen</button>
+                <button class="btn-option" onclick="window.saltarImagen()" style="margin-top:.5rem;border-color:rgba(220,38,38,0.3);color:#f87171;">⏭️ Saltar</button>
+            </div>
+        `;
+        
+        div.appendChild(pip);
+        div.appendChild(bubble);
+        conversation.appendChild(div);
+        conversation.scrollTop = conversation.scrollHeight;
+        
+        setTimeout(() => {
+            const input = document.getElementById('imagenInput');
+            if (input) {
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('La imagen es demasiado grande. Máximo 2MB.');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        imagenUsuario = ev.target.result;
+                        const preview = document.getElementById('imagenPreview');
+                        if (preview) {
+                            preview.src = imagenUsuario;
+                        }
+                        const previewDiv = document.getElementById('previewImagen');
+                        if (previewDiv) {
+                            previewDiv.style.display = 'block';
+                        }
+                        const uploadText = document.querySelector('.upload-area p');
+                        if (uploadText) {
+                            uploadText.textContent = '✅ Imagen seleccionada';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }, 100);
+    }
+    
+    window.confirmarImagen = function() {
+        if (!imagenUsuario) {
+            alert('Por favor, selecciona una imagen primero.');
+            return;
+        }
+        
+        agregarMensaje('user', '✅ Imagen confirmada');
+        
+        sessionStorage.setItem('userAvatar', imagenUsuario);
+        localStorage.setItem('userAvatar', imagenUsuario);
+        
+        actualizarAvatarAsistente();
+        
+        setTimeout(() => {
+            mostrarEstadoPensando();
+            mostrarIndicadorEscritura();
+            
+            setTimeout(() => {
+                eliminarIndicadorEscritura();
+                mostrarEstadoConectado();
+                
+                guardarTestimonio(nombreUsuario, calificacionSeleccionada, comentarioUsuario, imagenUsuario, testimonioPublico);
+                
+                agregarMensaje('bot', `¡Perfecto ${nombreUsuario}! Tu testimonio ha sido publicado exitosamente en nuestra web. 🌟\n\nTu experiencia ayudará a muchas personas a confiar en ${nombreWeb}. ¡Gracias por ser parte de nuestra comunidad! 🌿\n\nSi necesitas algo más, estoy aquí para ayudarte.`);
+                estadoConversacion = 'inicio';
+            }, 1200);
+        }, 500);
+    };
+    
+    window.saltarImagen = function() {
+        agregarMensaje('user', '⏭️ Saltar imagen');
+        
+        setTimeout(() => {
+            mostrarEstadoPensando();
+            mostrarIndicadorEscritura();
+            
+            setTimeout(() => {
+                eliminarIndicadorEscritura();
+                mostrarEstadoConectado();
+                
+                guardarTestimonio(nombreUsuario, calificacionSeleccionada, comentarioUsuario, null, testimonioPublico);
+                
+                agregarMensaje('bot', `¡Gracias ${nombreUsuario}! Tu testimonio ha sido publicado exitosamente en nuestra web. 🌟\n\nSi en algún momento quieres agregar tu foto de perfil, puedes hacerlo desde tu cuenta.\n\n¡Gracias por ser parte de ${nombreWeb}! 🌿`);
+                estadoConversacion = 'inicio';
+            }, 1200);
+        }, 500);
+    };
+
+    // ============================================================
+    // FUNCIÓN PARA GUARDAR TESTIMONIO
+    // ============================================================
+  
+  
+async function guardarTestimonio(nombre, calificacion, comentario, imagen, publico) {
+    try {
+        const testimonio = {
+            nombre: nombre,
+            calificacion: calificacion,
+            comentario: comentario,
+            imagen: imagen || null,
+            publico: publico !== undefined ? publico : true  // ← SIEMPRE TRUE POR DEFECTO
+        };
+        
+        console.log('📤 Enviando testimonio:', testimonio);
+        
+        mostrarEstadoPensando();
+        
+        const response = await fetch('/api/testimonios', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testimonio)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            localStorage.setItem('testimonioEnviado', 'true');
+            console.log('✅ Testimonio guardado exitosamente:', data);
+            mostrarEstadoConectado();
+            return true;
+        } else {
+            console.error('❌ Error al guardar testimonio:', data);
+            mostrarEstadoError();
+            guardarTestimonioLocal(nombre, calificacion, comentario, imagen, publico);
+            return false;
+        }
+    } catch (e) {
+        console.error('❌ Error de conexión al guardar testimonio:', e);
+        mostrarEstadoError();
+        guardarTestimonioLocal(nombre, calificacion, comentario, imagen, publico);
+        return false;
+    }
+}
+  
+ 
+
+    // ============================================================
+    // GUARDAR TESTIMONIO LOCAL (RESPALDO)
+    // ============================================================
+    function guardarTestimonioLocal(nombre, calificacion, comentario, imagen, publico) {
+        try {
+            const testimonio = {
+                id: Date.now().toString(36),
+                nombre: nombre,
+                calificacion: calificacion,
+                comentario: comentario,
+                imagen: imagen || null,
+                publico: publico !== undefined ? publico : true,
+                fecha: new Date().toISOString()
+            };
+            
+            let locales = [];
+            try {
+                const data = localStorage.getItem('testimonios_locales');
+                if (data) {
+                    locales = JSON.parse(data);
+                }
+            } catch(e) {}
+            
+            locales.push(testimonio);
+            localStorage.setItem('testimonios_locales', JSON.stringify(locales));
+            console.log('💾 Testimonio guardado localmente como respaldo');
+            mostrarEstadoConectado();
+        } catch(e) {
+            console.error('Error guardando testimonio local:', e);
+        }
+    }
+
+    // ============================================================
+    // ENVÍO DE MENSAJES
+    // ============================================================
+    function enviarMensaje() {
+        const texto = textInput.value.trim();
+        if (!texto) return;
+        if (esperandoRespuesta) {
+            alert('Por favor, espera a que termine la respuesta actual.');
+            return;
+        }
+        
+        agregarMensaje('user', texto);
+        textInput.value = '';
+        textInput.disabled = true;
+        btnSend.disabled = true;
+        esperandoRespuesta = true;
+        
+        setTimeout(() => {
+            mostrarEstadoPensando();
+            mostrarIndicadorEscritura();
+            
+            setTimeout(() => {
+                eliminarIndicadorEscritura();
+                mostrarEstadoConectado();
+                procesarRespuesta(texto);
+                textInput.disabled = false;
+                btnSend.disabled = false;
+                esperandoRespuesta = false;
+                
+                if (modoVoz) {
+                    setTimeout(() => {
+                        if (modoVoz) iniciarReconocimientoVoz();
+                    }, 1000);
+                }
+            }, 1000);
+        }, 300);
+    }
+    
+    function procesarRespuesta(texto) {
+        const textoLower = texto.toLowerCase().trim();
+        
+        if (textoLower.includes('hola') || textoLower.includes('buenas') || textoLower.includes('saludos')) {
+            agregarMensaje('bot', `¡Hola ${nombreUsuario}! 🌿\n\nSoy ${nombreAsistente}, tu asistente personal de ${nombreWeb}. ¿En qué puedo ayudarte hoy? Puedes calificarnos, dejar un testimonio o simplemente charlar.`);
+            return;
+        }
+        
+        if (textoLower.includes('gracias') || textoLower.includes('gracias')) {
+            agregarMensaje('bot', `¡De nada ${nombreUsuario}! Es un placer atenderte. 🌟\n\n¿Hay algo más en lo que pueda ayudarte?`);
+            return;
+        }
+        
+        if (textoLower.includes('adiós') || textoLower.includes('chao') || textoLower.includes('hasta luego')) {
+            agregarMensaje('bot', `¡Hasta luego ${nombreUsuario}! Fue un placer hablar contigo. 🌿\n\nVuelve cuando quieras. ¡Cuídate!`);
+            estadoConversacion = 'inicio';
+            return;
+        }
+        
+        if (textoLower.includes('reservar') || textoLower.includes('turno') || textoLower.includes('masaje')) {
+            agregarMensaje('bot', `Para reservar un turno, puedes ir a la página principal y usar el formulario de reserva. 📅\n\n¿Necesitas ayuda para encontrar algo en particular?`);
+            return;
+        }
+        
+        switch(estadoConversacion) {
+            case 'inicio':
+                const respuestaInicial = `¡Hola ${nombreUsuario}! 🌿\n\nSoy ${nombreAsistente}, tu asistente personal de ${nombreWeb}. Es un gusto conocerte.\n\nNos gustaría saber cómo fue tu experiencia hasta ahora. ¿Podrías calificarnos del 1 al 5 con las estrellas?`;
+                agregarMensaje('bot', respuestaInicial);
+                estadoConversacion = 'esperando_estrellas';
+                mostrarOpcionesEstrellas();
+                break;
+                
+            case 'esperando_estrellas':
+                agregarMensaje('bot', `Por favor ${nombreUsuario}, usa las estrellas para calificarnos. Haz clic en ellas y confirma tu calificación. 🌟`);
+                break;
+                
+            case 'esperando_comentario':
+                comentarioUsuario = texto;
+                agregarMensaje('bot', `¡Gracias ${nombreUsuario} por tu comentario! 🙌`);
+                setTimeout(() => {
+                    mostrarOpcionPublicar();
+                }, 500);
+                break;
+                
+            case 'esperando_publicar':
+                agregarMensaje('bot', `Por favor ${nombreUsuario}, usa los botones de arriba para responder si quieres publicar tu testimonio o no.`);
+                break;
+                
+            case 'esperando_imagen':
+                agregarMensaje('bot', `Por favor ${nombreUsuario}, usa el botón de subir imagen para agregar tu foto de perfil, o selecciona "Saltar" si no deseas agregarla.`);
+                break;
+                
+            default:
+                agregarMensaje('bot', `Hola ${nombreUsuario}, soy ${nombreAsistente}. ¿En qué más puedo ayudarte? Puedes preguntarme sobre reservas, servicios o simplemente charlar. 🌿`);
+        }
+    }
+
+    // ============================================================
+    // FUNCIÓN PARA MOSTRAR TESTIMONIOS LOCALES (RESPALDO)
+    // ============================================================
+    function mostrarTestimoniosLocales() {
+        try {
+            const data = localStorage.getItem('testimonios_locales');
+            if (data) {
+                const locales = JSON.parse(data);
+                if (locales.length > 0) {
+                    console.log(`📝 Testimonios locales encontrados: ${locales.length}`);
+                    locales.forEach((t, i) => {
+                        console.log(`  ${i+1}. ${t.nombre} - ${t.calificacion}⭐: "${t.comentario}"`);
+                    });
+                }
+            }
+        } catch(e) {}
+    }
+
+    // ============================================================
+    // EVENT LISTENERS
+    // ============================================================
+    btnSend.addEventListener('click', enviarMensaje);
+    
+    textInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            enviarMensaje();
+        }
+    });
+    
+    btnMic.addEventListener('click', () => {
+        if (modoVoz) {
+            toggleModoVoz();
+        } else {
+            toggleModoVoz();
+        }
+    });
+
+    // ============================================================
+    // INICIALIZACIÓN
+    // ============================================================
+    async function init() {
+        await verificarSesion();
+        await cargarNombreAsistente();
+        
+        subtitleUser.textContent = `👤 ${nombreUsuario} • Tu asistente personal`;
+        asistenteNombreEl.textContent = nombreAsistente;
+        actualizarAvatarAsistente();
+        
+        const avatarExistente = sessionStorage.getItem('userAvatar') || localStorage.getItem('userAvatar');
+        const tieneAvatar = avatarExistente && (avatarExistente.startsWith('data:image') || avatarExistente.startsWith('http'));
+        const testimonioLocal = localStorage.getItem('testimonioEnviado');
+        const tieneTestimonio = testimonioLocal === 'true';
+        
+        mostrarTestimoniosLocales();
+        
+        setTimeout(() => {
+            // Si ya tiene testimonio, no pedir de nuevo
+            if (tieneTestimonio && tieneAvatar) {
+                agregarMensaje('bot', `¡Hola ${nombreUsuario}! 🌿\n\nSoy ${nombreAsistente}, tu asistente personal de ${nombreWeb}. Veo que ya has compartido tu experiencia con nosotros. ¡Gracias! 🙌\n\n¿En qué más puedo ayudarte hoy?`);
+                estadoConversacion = 'inicio';
+                return;
+            }
+            
+            if (tieneAvatar && !tieneTestimonio) {
+                agregarMensaje('bot', `¡Hola ${nombreUsuario}! 🌿\n\nSoy ${nombreAsistente}, tu asistente personal de ${nombreWeb}. Es un gusto conocerte.\n\nNos gustaría saber cómo fue tu experiencia. ¿Podrías calificarnos del 1 al 5 con las estrellas? 🌟`);
+                estadoConversacion = 'esperando_estrellas';
+                setTimeout(() => {
+                    mostrarOpcionesEstrellas();
+                }, 500);
+                return;
+            }
+            
+            // Flujo normal si no tiene avatar ni testimonio
+            agregarMensaje('bot', `¡Hola ${nombreUsuario}! 🌿\n\nSoy ${nombreAsistente}, tu asistente personal de ${nombreWeb}. Es un gusto conocerte.\n\nNos gustaría saber cómo fue tu experiencia hasta ahora. ¿Podrías calificarnos del 1 al 5 con las estrellas? 🌟`);
+            estadoConversacion = 'esperando_estrellas';
+            
+            setTimeout(() => {
+                mostrarOpcionesEstrellas();
+            }, 500);
+        }, 800);
+        
+        console.log('🤖 Asistente iniciado:');
+        console.log('   👤 Usuario:', nombreUsuario);
+        console.log('   🤖 Asistente:', nombreAsistente);
+        console.log('   📝 Modo voz disponible:', 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
+        console.log('   🔑 Usuario verificado:', usuarioVerificado);
+        console.log('   🖼️ Tiene avatar:', tieneAvatar);
+        console.log('   📝 Tiene testimonio:', tieneTestimonio);
+        console.log('   🖼️ Avatar del asistente: LOGO (NO imagen del usuario)');
+    }
+    
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
+    
+</script>
+</body>
+</html>

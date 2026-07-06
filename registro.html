@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Registro | Serenity Spa</title>
+    <meta name="description" content="Regístrate en Serenity Spa y accede a beneficios exclusivos para miembros.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ============================================================
+         EMAILJS - SDK (SEGURO CON VARIABLES DE ENTORNO 🔒)
+         ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #0d0804;
+            --deep: #150d07;
+            --dark: #1c1009;
+            --surface: #251408;
+            --surface2: #2e1a0c;
+            --gold: #c9a87a;
+            --gold-light: #e8c98a;
+            --gold-dim: rgba(201, 168, 122, 0.18);
+            --gold-line: rgba(201, 168, 122, 0.30);
+            --text: #e8d5b8;
+            --text-muted: #a8906e;
+            --radius-pill: 999px;
+            --radius-card: 18px;
+            --radius-lg: 26px;
+            --transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--ink);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 8, 4, 0.92);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--gold-line);
+            z-index: 1000;
+            padding: 0.6rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+        }
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gold-line);
+        }
+        .logo-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            letter-spacing: .12em;
+        }
+        .logo-title i {
+            color: var(--gold);
+            font-size: 0.8rem;
+            margin-right: 0.3rem;
+        }
+
+        .btn-volver {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-volver:hover {
+            color: var(--gold-light);
+        }
+
+        /* HERO */
+        .hero-registro {
+            margin-top: 70px;
+            padding: 3rem 5% 1.5rem;
+            text-align: center;
+            background: linear-gradient(160deg, rgba(26, 35, 50, 0.9), rgba(44, 62, 80, 0.6), rgba(201, 169, 97, 0.3));
+            border-bottom: 1px solid var(--gold-line);
+        }
+        .hero-registro h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: var(--gold-light);
+            letter-spacing: .08em;
+        }
+        .hero-registro p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0.5rem auto 0;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .registro-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem 5% 4rem;
+        }
+
+        .registro-card {
+            max-width: 700px;
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--gold-line);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            animation: fadeUp .6s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .registro-card h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: var(--gold-light);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            letter-spacing: .08em;
+        }
+        .registro-card h2 i {
+            color: var(--gold);
+            margin-right: 0.5rem;
+        }
+
+        /* FORMULARIO */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 0.4rem;
+            letter-spacing: .06em;
+        }
+        .form-group label .required {
+            color: #ff6b6b;
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--deep);
+            border: 2px solid var(--gold-line);
+            border-radius: var(--radius-card);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'Lato', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .form-control:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(201, 168, 122, 0.15);
+        }
+        .form-control.error {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.12);
+        }
+        .form-control.success {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.12);
+        }
+
+        .form-control-wrapper {
+            position: relative;
+        }
+        .form-control-wrapper .status-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .form-control-wrapper .status-icon.error {
+            opacity: 1;
+            color: #ff6b6b;
+        }
+        .form-control-wrapper .status-icon.success {
+            opacity: 1;
+            color: #51cf66;
+        }
+
+        .validation-hint {
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .validation-hint.error {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #ff6b6b;
+        }
+        .validation-hint.success {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #51cf66;
+        }
+
+        .terminos-group {
+            margin: 1.2rem 0;
+        }
+        .terminos-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .terminos-group input[type="checkbox"] {
+            accent-color: var(--gold);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .terminos-group label.error {
+            color: #ff6b6b;
+        }
+        .terminos-group a {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--gold);
+            border: none;
+            border-radius: var(--radius-pill);
+            color: var(--ink);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(201, 168, 122, 0.35);
+        }
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-message {
+            display: none;
+            padding: 0.8rem;
+            border-radius: var(--radius-card);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .auth-message.error {
+            display: block;
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+        .auth-message.success {
+            display: block;
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+        .auth-message.info {
+            display: block;
+            background: rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .auth-switch a {
+            color: var(--gold);
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        .auth-switch a:hover {
+            color: var(--gold-light);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-top-color: var(--ink);
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* VERIFICACIÓN */
+        #verificacionSection {
+            display: none;
+        }
+        #verificacionSection .btn-submit {
+            margin-top: 0.5rem;
+        }
+        .btn-reenviar {
+            background: transparent;
+            border: 1px solid var(--gold-line);
+            color: var(--text-muted);
+            padding: 0.4rem 1.2rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+        .btn-reenviar:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* SECCIONES DEL MODAL (compartido con index) */
+        .login-section {
+            display: none;
+        }
+        .login-section.active {
+            display: block;
+        }
+        .register-section {
+            display: block;
+        }
+        .register-section.hidden {
+            display: none;
+        }
+
+        /* BENEFICIOS EXCLUSIVOS */
+        .beneficios-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gold-line);
+        }
+        .beneficios-section h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold-light);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .beneficios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+        .beneficio-item {
+            background: var(--deep);
+            border: 1px solid var(--gold-line);
+            border-radius: var(--radius-card);
+            padding: 0.8rem 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+        .beneficio-item:hover {
+            border-color: var(--gold);
+            background: var(--surface2);
+        }
+        .beneficio-item i {
+            color: var(--gold);
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--ink);
+            border-top: 1px solid var(--gold-line);
+            font-size: .72rem;
+            color: var(--text-muted);
+            letter-spacing: .1em;
+        }
+        footer span {
+            color: var(--gold);
+        }
+
+        @media (max-width: 768px) {
+            .registro-card {
+                padding: 1.5rem;
+            }
+            .hero-registro h1 {
+                font-size: 1.6rem;
+            }
+            .beneficios-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .beneficios-grid {
+                grid-template-columns: 1fr;
+            }
+            .registro-card {
+                padding: 1.2rem;
+            }
+            .logo-title {
+                font-size: 0.75rem;
+            }
+            .btn-volver {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <a href="/" class="header-left">
+        <img class="logo-img" src="https://i.postimg.cc/hz1zW7dg/1781383382370.webp" alt="Serenity Spa Logo">
+        <span class="logo-title"><i class="fas fa-feather-alt"></i> SERENITY SPA</span>
+    </a>
+    <a href="/" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
+</header>
+
+<!-- HERO -->
+<section class="hero-registro">
+    <h1 id="heroTitulo">El Arte del Masaje Profesional</h1>
+    <p id="heroSubtitulo">Domina las técnicas que transforman cuerpos y vidas</p>
+</section>
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="registro-container">
+    <div class="registro-card">
+
+        <!-- Sección de Registro -->
+        <div id="registerSection" class="register-section">
+            <h2><i class="fas fa-user-plus"></i> Crear Cuenta</h2>
+            <div id="authMessage1" class="auth-message"></div>
+
+            <form id="authForm" novalidate>
+                <div class="form-group">
+                    <label for="authNombre">Nombre completo <span class="required">*</span></label>
+                    <div class="form-control-wrapper">
+                        <input type="text" id="authNombre" class="form-control" placeholder="Ej: María González" autocomplete="name">
+                        <span class="status-icon" id="nombreIcon"></span>
+                    </div>
+                    <div class="validation-hint" id="authNombreHint"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="authEmail">Correo electrónico <span class="required">*</span></label>
+                    <div class="form-control-wrapper">
+                        <input type="email" id="authEmail" class="form-control" placeholder="ejemplo@correo.com" autocomplete="email">
+                        <span class="status-icon" id="emailIcon"></span>
+                    </div>
+                    <div class="validation-hint" id="authEmailHint"></div>
+                </div>
+
+                <div class="terminos-group">
+                    <label id="terminosLabel">
+                        <input type="checkbox" id="authTerminos" required>
+                        Acepto los <a href="/terminos" target="_blank">Términos y Condiciones</a>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="validation-hint" id="authTerminosHint"></div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSolicitarCodigo">
+                    <i class="fas fa-envelope"></i> Enviar Código de Verificación
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                ¿Ya tienes cuenta? <a id="switchToLogin">Iniciar Sesión</a>
+            </div>
+        </div>
+
+        <!-- Sección de Verificación de Código -->
+        <div id="verificacionSection">
+            <h2><i class="fas fa-shield-alt"></i> Verificar Código</h2>
+            <div id="authMessage2" class="auth-message"></div>
+
+            <form id="authVerificarForm">
+                <div class="form-group">
+                    <label for="authCodigo">Código de 6 dígitos <span class="required">*</span></label>
+                    <div class="form-control-wrapper">
+                        <input type="text" id="authCodigo" class="form-control" placeholder="123456" maxlength="6" inputmode="numeric">
+                        <span class="status-icon" id="codigoIcon"></span>
+                    </div>
+                    <div class="validation-hint" id="authCodigoHint"></div>
+                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem;">
+                        <i class="fas fa-clock"></i> El código fue enviado a tu correo. Expira en 3 minutos.
+                    </p>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnVerificarCodigo">
+                    <i class="fas fa-check-circle"></i> Verificar y Registrar
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn-reenviar" id="btnReenviarCodigo">
+                    <i class="fas fa-sync"></i> Reenviar código
+                </button>
+            </div>
+
+            <div class="auth-switch" style="margin-top: 1rem;">
+                <a id="switchBackToRegister">← Volver al registro</a>
+            </div>
+        </div>
+
+        <!-- Sección de Inicio de Sesión -->
+        <div id="loginSection" class="login-section">
+            <h2><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</h2>
+            <div id="authMessageLogin" class="auth-message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Correo electrónico <span class="required">*</span></label>
+                    <div class="form-control-wrapper">
+                        <input type="email" id="loginEmail" class="form-control" placeholder="ejemplo@correo.com" autocomplete="email">
+                        <span class="status-icon" id="loginEmailIcon"></span>
+                    </div>
+                    <div class="validation-hint" id="loginEmailHint"></div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnLogin">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                ¿No tienes cuenta? <a id="switchToRegister">Registrarse</a>
+            </div>
+        </div>
+
+        <!-- BENEFICIOS EXCLUSIVOS -->
+        <div class="beneficios-section">
+            <h3><i class="fas fa-gem"></i> Beneficios Exclusivos</h3>
+            <div class="beneficios-grid" id="beneficiosGrid">
+                <div class="beneficio-item"><i class="fas fa-percent"></i> Descuentos exclusivos</div>
+                <div class="beneficio-item"><i class="fas fa-gift"></i> Paquetes especiales</div>
+                <div class="beneficio-item"><i class="fas fa-spa"></i> Masaje gratis anual</div>
+                <div class="beneficio-item"><i class="fas fa-comment-dots"></i> Comenta y comparte</div>
+                <div class="beneficio-item"><i class="fas fa-bell"></i> Alertas de promociones</div>
+                <div class="beneficio-item"><i class="fas fa-robot"></i> Atención personalizada IA</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <span>✦</span> Bienestar que se siente, donde estés. <span>✦</span>
+</footer>
+
+<!-- ============================================================
+     SCRIPT PRINCIPAL
+     ============================================================ -->
+<script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // CONFIGURACIÓN
+        // ============================================================
+        const REGISTRO_API = '/api/registro';
+
+        // ============================================================
+        // CONFIGURACIÓN EMAILJS (CARGADA DESDE EL SERVIDOR 🔒)
+        // ============================================================
+        let emailjsConfig = { publicKey: '', serviceId: '', templateId: '' };
+
+        async function cargarConfigEmailJS() {
+            try {
+                const response = await fetch('/api/config-emailjs');
+                const data = await response.json();
+                emailjsConfig = data;
+
+                if (emailjsConfig.publicKey) {
+                    emailjs.init(emailjsConfig.publicKey);
+                    console.log('✅ EmailJS inicializado desde el servidor');
+                } else {
+                    console.warn('⚠️ No se encontró EMAILJS_PUBLIC_KEY');
+                }
+            } catch (error) {
+                console.error('❌ Error cargando configuración EmailJS:', error);
+            }
+        }
+
+
+
+async function enviarCodigoEmailJS(email, nombre, codigo) {
+    try {
+        if (!emailjsConfig.publicKey || !emailjsConfig.templateId) {
+            throw new Error('EmailJS no configurado correctamente');
+        }
+        
+        // ✅ PARÁMETROS CORRECTOS
+        const templateParams = {
+            to_email: email,
+            name: nombre,
+            passcode: codigo,   // ← CAMBIAR password → passcode
+            time: '3 minutos'
+        };
+        
+        const response = await emailjs.send(
+            emailjsConfig.serviceId,
+            emailjsConfig.templateId,
+            templateParams
+        );
+        
+        console.log('✅ Correo enviado:', response);
+        return { success: true };
+    } catch (error) {
+        console.error('❌ Error:', error);
+        return { success: false, error: error.text || 'Error al enviar' };
+    }
+}
+
+        // ============================================================
+        // FUNCIONES DE AUTENTICACIÓN
+        // ============================================================
+        function getToken() {
+            return sessionStorage.getItem('userToken') || localStorage.getItem('userToken') || null;
+        }
+
+        function setToken(token) {
+            if (token) {
+                sessionStorage.setItem('userToken', token);
+                localStorage.setItem('userToken', token);
+            } else {
+                sessionStorage.removeItem('userToken');
+                localStorage.removeItem('userToken');
+            }
+        }
+
+        function setUserData(nombre, email, avatar) {
+            if (nombre) {
+                sessionStorage.setItem('userNombre', nombre);
+                localStorage.setItem('userNombre', nombre);
+            }
+            if (email) {
+                sessionStorage.setItem('userEmail', email);
+                localStorage.setItem('userEmail', email);
+            }
+            if (avatar) {
+                sessionStorage.setItem('userAvatar', avatar);
+                localStorage.setItem('userAvatar', avatar);
+            }
+        }
+
+        let emailRegistro = '';
+
+        // ============================================================
+        // MODAL DE REGISTRO / LOGIN
+        // ============================================================
+        function mostrarMensajeAuth1(tipo, texto) {
+            const msg = document.getElementById('authMessage1');
+            msg.className = `auth-message ${tipo}`;
+            msg.innerHTML = texto;
+            msg.style.display = 'block';
+        }
+
+        function mostrarMensajeAuth2(tipo, texto) {
+            const msg = document.getElementById('authMessage2');
+            msg.className = `auth-message ${tipo}`;
+            msg.innerHTML = texto;
+            msg.style.display = 'block';
+        }
+
+        function mostrarMensajeLogin(tipo, texto) {
+            const msg = document.getElementById('authMessageLogin');
+            msg.className = `auth-message ${tipo}`;
+            msg.innerHTML = texto;
+            msg.style.display = 'block';
+        }
+
+        // ============================================================
+        // VALIDACIÓN
+        // ============================================================
+        function validarRegistro() {
+            const nombre = document.getElementById('authNombre');
+            const email = document.getElementById('authEmail');
+            const terminos = document.getElementById('authTerminos');
+
+            let valido = true;
+
+            // Resetear
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.classList.remove('error', 'success');
+            });
+            document.querySelectorAll('.validation-hint').forEach(el => {
+                el.className = 'validation-hint';
+            });
+            document.querySelectorAll('.status-icon').forEach(el => {
+                el.className = 'status-icon';
+            });
+            document.getElementById('terminosLabel').classList.remove('error');
+
+            // Validar nombre
+            if (!nombre.value.trim() || nombre.value.trim().length < 2) {
+                nombre.classList.add('error');
+                document.getElementById('nombreIcon').className = 'status-icon error';
+                document.getElementById('nombreIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                document.getElementById('authNombreHint').className = 'validation-hint error';
+                document.getElementById('authNombreHint').innerHTML = '<i class="fas fa-exclamation-circle"></i> El nombre es obligatorio (mínimo 2 caracteres).';
+                valido = false;
+            } else {
+                nombre.classList.add('success');
+                document.getElementById('nombreIcon').className = 'status-icon success';
+                document.getElementById('nombreIcon').innerHTML = '<i class="fas fa-check-circle"></i>';
+            }
+
+            // Validar email
+            if (!email.value.trim() || !email.value.includes('@') || !email.value.includes('.')) {
+                email.classList.add('error');
+                document.getElementById('emailIcon').className = 'status-icon error';
+                document.getElementById('emailIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                document.getElementById('authEmailHint').className = 'validation-hint error';
+                document.getElementById('authEmailHint').innerHTML = '<i class="fas fa-exclamation-circle"></i> Ingresa un correo electrónico válido.';
+                valido = false;
+            } else {
+                email.classList.add('success');
+                document.getElementById('emailIcon').className = 'status-icon success';
+                document.getElementById('emailIcon').innerHTML = '<i class="fas fa-check-circle"></i>';
+            }
+
+            // Validar términos
+            if (!terminos.checked) {
+                document.getElementById('terminosLabel').classList.add('error');
+                document.getElementById('authTerminosHint').className = 'validation-hint error';
+                document.getElementById('authTerminosHint').innerHTML = '<i class="fas fa-exclamation-circle"></i> Debes aceptar los Términos y Condiciones.';
+                valido = false;
+            }
+
+            if (!valido) {
+                const primerError = document.querySelector('.form-control.error, .terminos-group label.error');
+                if (primerError) {
+                    primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return { valido: false };
+            }
+
+            return {
+                valido: true,
+                datos: {
+                    nombre: nombre.value.trim(),
+                    email: email.value.trim()
+                }
+            };
+        }
+
+        // ============================================================
+        // REGISTRO - CON EMAILJS (SEGURO 🔒)
+        // ============================================================
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const validacion = validarRegistro();
+            if (!validacion.valido) return;
+
+            const { nombre, email } = validacion.datos;
+
+            // Generar código en el frontend
+            const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+            const btn = document.getElementById('btnSolicitarCodigo');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Enviando...';
+            btn.disabled = true;
+
+            try {
+                // Guardar código en el servidor
+                const res = await fetch('/api/registro/guardar-codigo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, nombre, codigo })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    // Enviar correo con EmailJS
+                    const resultado = await enviarCodigoEmailJS(email, nombre, codigo);
+
+                    if (resultado.success) {
+                        emailRegistro = email;
+                        mostrarMensajeAuth1('success', '✅ Código enviado a tu correo. Revisa tu bandeja de entrada o spam.');
+
+                        document.getElementById('registerSection').style.display = 'none';
+                        document.getElementById('verificacionSection').style.display = 'block';
+                        document.getElementById('authCodigo').value = '';
+                        document.getElementById('authCodigo').focus();
+
+                        // Limpiar mensajes anteriores
+                        document.getElementById('authMessage2').style.display = 'none';
+                    } else {
+                        mostrarMensajeAuth1('error', '❌ Error al enviar el código: ' + resultado.error);
+                    }
+                } else {
+                    if (data.error && (data.error.includes('ya está registrado') || data.error.includes('ya registrado'))) {
+                        mostrarMensajeAuth1('error', `❌ ${data.error}<br><br>Si ya tienes cuenta, <a href="#" onclick="document.getElementById('switchToLogin').click();" style="color:var(--gold);text-decoration:underline;">inicia sesión aquí</a>.`);
+                    } else {
+                        mostrarMensajeAuth1('error', '❌ ' + (data.error || 'Error al guardar el código'));
+                    }
+                }
+            } catch (error) {
+                mostrarMensajeAuth1('error', '❌ Error de conexión. Inténtalo de nuevo.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // VERIFICAR CÓDIGO
+        // ============================================================
+        document.getElementById('authVerificarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const codigo = document.getElementById('authCodigo').value.trim();
+
+            if (!codigo || codigo.length !== 6 || !/^\d{6}$/.test(codigo)) {
+                document.getElementById('authCodigo').classList.add('error');
+                document.getElementById('codigoIcon').className = 'status-icon error';
+                document.getElementById('codigoIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                document.getElementById('authCodigoHint').className = 'validation-hint error';
+                document.getElementById('authCodigoHint').innerHTML = '<i class="fas fa-exclamation-circle"></i> El código debe tener exactamente 6 dígitos.';
+                return;
+            }
+
+            const btn = document.getElementById('btnVerificarCodigo');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Verificando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/registro/verificar-codigo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailRegistro, codigo })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    mostrarMensajeAuth2('success', '✅ ¡Verificación exitosa! Redirigiendo...');
+
+                    setToken(data.token);
+                    setUserData(data.usuario.nombre, data.usuario.email, data.usuario.avatar || null);
+
+                    setTimeout(() => {
+                        window.location.href = '/asistente.html';
+                    }, 1500);
+                } else {
+                    mostrarMensajeAuth2('error', `❌ ${data.error || 'Código incorrecto.'}`);
+                    document.getElementById('authCodigo').value = '';
+                    document.getElementById('authCodigo').focus();
+                }
+            } catch (error) {
+                mostrarMensajeAuth2('error', '❌ Error de conexión.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // REENVIAR CÓDIGO
+        // ============================================================
+        document.getElementById('btnReenviarCodigo').addEventListener('click', async () => {
+            document.getElementById('verificacionSection').style.display = 'none';
+            document.getElementById('registerSection').style.display = 'block';
+            document.getElementById('registerSection').classList.remove('hidden');
+            document.getElementById('authMessage1').style.display = 'none';
+            document.getElementById('authEmail').value = emailRegistro;
+            document.getElementById('authForm').dispatchEvent(new Event('submit'));
+        });
+
+        // ============================================================
+        // SWITCH ENTRE REGISTRO Y LOGIN
+        // ============================================================
+        document.getElementById('switchToLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registerSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('loginSection').classList.add('active');
+            document.getElementById('authMessage1').style.display = 'none';
+            document.getElementById('authMessageLogin').style.display = 'none';
+        });
+
+        document.getElementById('switchToRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registerSection').style.display = 'block';
+            document.getElementById('registerSection').classList.remove('hidden');
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('authMessage1').style.display = 'none';
+            document.getElementById('authMessageLogin').style.display = 'none';
+        });
+
+        document.getElementById('switchBackToRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registerSection').style.display = 'block';
+            document.getElementById('verificacionSection').style.display = 'none';
+        });
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value.trim();
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                document.getElementById('loginEmail').classList.add('error');
+                document.getElementById('loginEmailIcon').className = 'status-icon error';
+                document.getElementById('loginEmailIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                document.getElementById('loginEmailHint').className = 'validation-hint error';
+                document.getElementById('loginEmailHint').innerHTML = '<i class="fas fa-exclamation-circle"></i> Ingresa un correo electrónico válido.';
+                return;
+            }
+
+            const btn = document.getElementById('btnLogin');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Verificando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${REGISTRO_API}/login-solicitar-codigo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    emailRegistro = email;
+                    mostrarMensajeLogin('success', '✅ Código enviado a tu correo. Revisa tu bandeja de entrada o spam.');
+
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('verificacionSection').style.display = 'block';
+                    document.getElementById('authCodigo').value = '';
+                    document.getElementById('authCodigo').focus();
+
+                    document.querySelector('#verificacionSection h2').textContent = 'Verificar Código - Inicio de Sesión';
+                    document.getElementById('verificacionSection').dataset.modo = 'login';
+                    document.getElementById('authMessage2').style.display = 'none';
+                } else {
+                    mostrarMensajeLogin('error', `❌ ${data.error || 'Error al enviar el código.'}`);
+                }
+            } catch (error) {
+                mostrarMensajeLogin('error', '❌ Error de conexión. Inténtalo de nuevo.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // INICIALIZACIÓN
+        // ============================================================
+        async function init() {
+            // Cargar configuración de EmailJS desde el servidor 🔒
+            await cargarConfigEmailJS();
+
+            // Cargar beneficios desde el servidor
+            try {
+                const response = await fetch('/api/config/registro');
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Actualizar hero
+                    if (data.hero) {
+                        document.getElementById('heroTitulo').textContent = data.hero.titulo || 'El Arte del Masaje Profesional';
+                        document.getElementById('heroSubtitulo').textContent = data.hero.subtitulo || 'Domina las técnicas que transforman cuerpos y vidas';
+                    }
+
+                    // Actualizar beneficios
+                    if (data.beneficios && Array.isArray(data.beneficios)) {
+                        const grid = document.getElementById('beneficiosGrid');
+                        const iconos = ['fa-percent', 'fa-gift', 'fa-spa', 'fa-comment-dots', 'fa-bell', 'fa-robot'];
+                        grid.innerHTML = data.beneficios.map((b, i) => `
+                            <div class="beneficio-item">
+                                <i class="fas ${iconos[i % iconos.length]}"></i>
+                                ${escapeHtml(b.descripcion || 'Beneficio exclusivo')}
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (e) {
+                console.warn('Error cargando configuración de registro:', e);
+            }
+
+            console.log('📝 Página de registro cargada correctamente');
+            console.log('🔒 EmailJS configurado:', emailjsConfig.publicKey ? '✅ Sí' : '❌ No');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+    })();
+</script>
+</body>
+</html>

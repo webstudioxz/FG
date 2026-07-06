@@ -1,0 +1,3470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel | Serenity Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0d0804 0%, #1a1008 100%);
+            border-right: 1px solid rgba(201, 168, 122, 0.15);
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-brand {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(201, 168, 122, 0.1);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(201, 168, 122, 0.3);
+        }
+
+        .sidebar-brand .brand-text {
+            color: #e8d5b8;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .sidebar-brand .brand-text span {
+            color: #c9a87a;
+        }
+
+        .sidebar-brand .brand-sub {
+            font-size: 0.55rem;
+            color: rgba(168, 144, 110, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 0.8rem;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.2rem;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            color: rgba(168, 144, 110, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.25s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .sidebar-menu li a i {
+            width: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(168, 144, 110, 0.5);
+            transition: color 0.25s;
+        }
+
+        .sidebar-menu li a:hover {
+            background: rgba(201, 168, 122, 0.08);
+            color: #e8d5b8;
+        }
+
+        .sidebar-menu li a:hover i {
+            color: #c9a87a;
+        }
+
+        .sidebar-menu li a.active {
+            background: rgba(201, 168, 122, 0.12);
+            color: #c9a87a;
+            border: 1px solid rgba(201, 168, 122, 0.15);
+        }
+
+        .sidebar-menu li a.active i {
+            color: #c9a87a;
+        }
+
+        .sidebar-menu li a .badge {
+            margin-left: auto;
+            background: rgba(220, 38, 38, 0.15);
+            color: #dc2626;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        .sidebar-menu li a .badge.success {
+            background: rgba(5, 150, 105, 0.15);
+            color: #059669;
+        }
+
+        .sidebar-menu .menu-divider {
+            height: 1px;
+            background: rgba(201, 168, 122, 0.08);
+            margin: 0.8rem 1rem;
+        }
+
+        .sidebar-menu .menu-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(168, 144, 110, 0.3);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(201, 168, 122, 0.08);
+            margin-top: 1rem;
+        }
+
+        .sidebar-footer .btn-logout-sidebar {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            color: rgba(168, 144, 110, 0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.25s;
+            cursor: pointer;
+            width: 100%;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-footer .btn-logout-sidebar:hover {
+            background: rgba(220, 38, 38, 0.08);
+            color: #dc2626;
+        }
+
+        .sidebar-footer .btn-logout-sidebar i {
+            color: rgba(168, 144, 110, 0.4);
+        }
+
+        .sidebar-footer .btn-logout-sidebar:hover i {
+            color: #dc2626;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-content {
+            margin-left: 0;
+            flex: 1;
+            padding: 1.5rem;
+            transition: margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 100%;
+        }
+
+        .main-content.shifted {
+            margin-left: 280px;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 1rem 1.75rem;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: #4b5563;
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 8px;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-menu-toggle:hover {
+            background: rgba(201, 168, 122, 0.1);
+            color: #c9a87a;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .title-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #C9A961, #A8883F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .title-section h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .title-section .subtitle-admin {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            font-weight: 400;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #C9A961;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #A8883F;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+        .btn-outline:hover {
+            border-color: #C9A961;
+            color: #C9A961;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-1px);
+        }
+
+        .btn-info {
+            background: #3B82F6;
+            color: white;
+        }
+        .btn-info:hover {
+            background: #2563EB;
+            transform: translateY(-1px);
+        }
+
+        .btn-dark {
+            background: #1a2332;
+            color: white;
+        }
+        .btn-dark:hover {
+            background: #2d3a4a;
+            transform: translateY(-1px);
+        }
+
+        .btn-purple {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-purple:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            color: #6b7280;
+        }
+
+        .tab.active {
+            background: #C9A961;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(201, 169, 97, 0.08);
+            color: #1a2332;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .config-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .config-panel h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #1a2332;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-panel h3 i {
+            color: #C9A961;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #C9A961;
+            box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+            background: white;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .servicios-grid,
+        .turnos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .servicio-card,
+        .turno-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: all 0.25s;
+        }
+
+        .servicio-card:hover,
+        .turno-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .servicio-imagen {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .servicio-info,
+        .turno-info {
+            padding: 1rem;
+        }
+
+        .servicio-nombre,
+        .turno-nombre {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a2332;
+            margin-bottom: 0.25rem;
+        }
+
+        .servicio-precio,
+        .turno-hora {
+            color: #C9A961;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .servicio-descripcion,
+        .turno-detalle {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .servicio-beneficios {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            background: #f3f4f8;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .tag-danger {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .tag-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .tag-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .tag-purple {
+            background: rgba(124, 58, 237, 0.1);
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .tag-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+            font-weight: 600;
+        }
+
+        .tag-block {
+            background: rgba(220, 38, 38, 0.15);
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .servicio-acciones,
+        .turno-acciones {
+            display: flex;
+            gap: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+
+        .accion-btn {
+            flex: 1;
+            min-width: 65px;
+            padding: 0.35rem 0.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.6rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .accion-btn.editar {
+            background: rgba(201, 169, 97, 0.1);
+            color: #C9A961;
+        }
+
+        .accion-btn.eliminar {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+
+        .accion-btn.whatsapp {
+            background: rgba(37, 211, 102, 0.1);
+            color: #25D366;
+        }
+
+        .accion-btn.desbloquear {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+
+        .accion-btn.bloquear-perm {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+
+        .accion-btn.eliminar-reg {
+            background: rgba(239, 68, 68, 0.12);
+            color: #dc2626;
+        }
+
+        .accion-btn.block-ip {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(220, 38, 38, 0.15);
+        }
+
+        .accion-btn:hover {
+            filter: brightness(0.9);
+            transform: scale(1.02);
+        }
+
+        .comentarios-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+        }
+
+        .comentarios-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .comentarios-container::-webkit-scrollbar-track {
+            background: #f3f4f8;
+            border-radius: 10px;
+        }
+
+        .comentarios-container::-webkit-scrollbar-thumb {
+            background: #C9A961;
+            border-radius: 10px;
+        }
+
+        .comentario-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: start;
+            padding: 0.9rem 1.2rem;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #eef0f2;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .comentario-item:hover {
+            background: #f5f6f8;
+            border-color: #d1d5db;
+        }
+
+        .comentario-item .comentario-contenido {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            min-width: 0;
+        }
+
+        .comentario-item .comentario-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .comentario-item .comentario-nombre {
+            font-weight: 600;
+            color: #1a2332;
+            font-size: 0.85rem;
+        }
+
+        .comentario-item .comentario-estrellas {
+            color: #C9A961;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .comentario-item .comentario-fecha {
+            font-size: 0.6rem;
+            color: #9ca3af;
+            margin-left: auto;
+        }
+
+        .comentario-item .comentario-texto {
+            font-size: 0.8rem;
+            color: #4b5563;
+            line-height: 1.5;
+            padding-left: 0.2rem;
+            border-left: 3px solid rgba(201, 168, 122, 0.3);
+            padding-left: 0.8rem;
+        }
+
+        .comentario-item .comentario-estado {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.6rem;
+            font-weight: 500;
+        }
+
+        .comentario-item .comentario-estado .tag {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.6rem;
+        }
+
+        .comentario-item .comentario-acciones {
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .comentario-item .comentario-acciones button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .comentario-item .comentario-acciones .btn-eliminar {
+            color: #9ca3af;
+        }
+
+        .comentario-item .comentario-acciones .btn-eliminar:hover {
+            background: rgba(220, 38, 38, 0.08);
+            color: #dc2626;
+        }
+
+        .comentario-item .comentario-acciones .btn-publicar {
+            color: #9ca3af;
+        }
+
+        .comentario-item .comentario-acciones .btn-publicar:hover {
+            background: rgba(5, 150, 105, 0.08);
+            color: #059669;
+        }
+
+        .comentario-item .comentario-acciones .btn-privado {
+            color: #9ca3af;
+        }
+
+        .comentario-item .comentario-acciones .btn-privado:hover {
+            background: rgba(107, 114, 128, 0.08);
+            color: #6b7280;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 750px;
+            width: 92%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            z-index: 1;
+        }
+
+        .modal-header h3 {
+            font-size: 1.1rem;
+            color: #1a2332;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: all 0.25s;
+            padding: 0.3rem;
+            border-radius: 6px;
+        }
+
+        .modal-close:hover {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.05);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            background: #fafafa;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: #fafafa;
+            border-radius: 16px;
+            color: #9ca3af;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            color: #d1d5db;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 1.2rem;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin-top: 0.2rem;
+        }
+
+        .stat-card.danger .stat-value {
+            color: #dc2626;
+        }
+        .stat-card.warning .stat-value {
+            color: #f59e0b;
+        }
+        .stat-card.success .stat-value {
+            color: #059669;
+        }
+        .stat-card.info .stat-value {
+            color: #3B82F6;
+        }
+        .stat-card.purple .stat-value {
+            color: #7c3aed;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9fafb;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-area:hover {
+            border-color: #C9A961;
+            background: rgba(201, 169, 97, 0.03);
+        }
+
+        .image-upload-area i {
+            font-size: 2rem;
+            color: #C9A961;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .image-upload-area p {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .image-preview-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .image-preview-box {
+            flex: 1;
+            min-width: 120px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            overflow: hidden;
+            background: #f9fafb;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview-box img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .image-preview-box .preview-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.2rem;
+            font-size: 0.55rem;
+            text-align: center;
+        }
+
+        .image-preview-box.empty {
+            color: #9ca3af;
+            font-size: 0.7rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+        }
+
+        .dynamic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dynamic-item {
+            background: #f3f4f8;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dynamic-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #dc2626;
+            font-size: 0.7rem;
+        }
+
+        .horario-item {
+            background: #f3f4f8;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .horario-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #dc2626;
+            font-size: 0.7rem;
+        }
+
+        .dia-checkbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            color: #4b5563;
+            cursor: pointer;
+        }
+
+        .dia-checkbox input[type="checkbox"] {
+            accent-color: #C9A961;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .palabra-item {
+            background: rgba(220, 38, 38, 0.06);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(220, 38, 38, 0.12);
+        }
+
+        .palabra-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #dc2626;
+            font-size: 0.7rem;
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f3f4f8;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #C9A961;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        table th {
+            background: #f9fafb;
+            padding: 0.7rem;
+            text-align: left;
+            font-weight: 600;
+            color: #4b5563;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        table td {
+            padding: 0.7rem;
+            border-bottom: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+
+        table tr:hover td {
+            background: #f9fafb;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transform: translateX(150%);
+            transition: transform 0.35s;
+            z-index: 3000;
+            font-size: 0.85rem;
+            border-left: 4px solid #059669;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: #dc2626;
+        }
+
+        .toast.success {
+            border-left-color: #059669;
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .info-bloqueo-acumulativo {
+            background: #fef3c7;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 0.75rem;
+            color: #92400e;
+            margin-top: 0.5rem;
+        }
+        .info-bloqueo-acumulativo .badge-1 {
+            background: #f59e0b;
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .info-bloqueo-acumulativo .badge-2 {
+            background: #f97316;
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .info-bloqueo-acumulativo .badge-3 {
+            background: #dc2626;
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .security-mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .security-mode-badge.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+        }
+        .security-mode-badge.inactive {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .modalidad-toggle {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .modalidad-toggle label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #4b5563;
+            padding: 0.4rem 1rem;
+            background: #f9fafb;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.25s;
+        }
+
+        .modalidad-toggle label:hover {
+            border-color: #e5e7eb;
+            background: #f3f4f8;
+        }
+
+        .modalidad-toggle label input[type="checkbox"] {
+            accent-color: #C9A961;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .modalidad-toggle label.activo {
+            border-color: #C9A961;
+            background: rgba(201, 169, 97, 0.06);
+        }
+
+        .info-intervalos {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0 1rem 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .info-intervalos .intervalo-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.3rem 1rem;
+            margin-right: 1.5rem;
+            font-size: 0.8rem;
+        }
+
+        .info-intervalos .intervalo-item .icon {
+            font-size: 1rem;
+        }
+
+        .info-intervalos .intervalo-item .label {
+            color: #6b7280;
+        }
+
+        .info-intervalos .intervalo-item .value {
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .info-intervalos .intervalo-item .sub {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+            }
+
+            .main-content.shifted {
+                margin-left: 0;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .admin-header {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+
+            .header-left {
+                justify-content: space-between;
+            }
+
+            .header-actions {
+                justify-content: flex-start;
+                gap: 0.5rem;
+            }
+
+            .header-actions .btn {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .servicios-grid,
+            .turnos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comentario-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .comentario-item .comentario-acciones {
+                justify-content: flex-end;
+                padding-top: 0.3rem;
+                border-top: 1px solid #eef0f2;
+            }
+
+            .tabs {
+                gap: 0.2rem;
+            }
+
+            .tab {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .modalidad-toggle {
+                gap: 0.8rem;
+            }
+
+            .info-intervalos .intervalo-item {
+                display: block;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+                padding: 0.3rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .admin-header .title-section h1 {
+                font-size: 1rem;
+            }
+
+            .title-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .btn-menu-toggle {
+                font-size: 1.1rem;
+            }
+
+            .config-panel {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <img src="https://i.postimg.cc/hz1zW7dg/1781383382370.webp" alt="Serenity Spa">
+        <div>
+            <div class="brand-text">Serenity <span>Spa</span></div>
+            <span class="brand-sub">Panel de Administración</span>
+        </div>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="menu-label">General</li>
+        <li><a class="active" data-section="config" onclick="cambiarSeccion('config')">
+            <i class="fas fa-sliders-h"></i> Configuración
+        </a></li>
+        <li><a data-section="registro" onclick="cambiarSeccion('registro')">
+            <i class="fas fa-user-graduate"></i> Registro
+        </a></li>
+
+        <li class="menu-divider"></li>
+
+        <li class="menu-label">Gestión</li>
+        <li><a data-section="servicios" onclick="cambiarSeccion('servicios')">
+            <i class="fas fa-spa"></i> Servicios
+        </a></li>
+        <li><a data-section="turnos" onclick="cambiarSeccion('turnos')">
+            <i class="fas fa-calendar-check"></i> Turnos
+            <span class="badge" id="turnosBadge">0</span>
+        </a></li>
+        <li><a data-section="usuarios" onclick="cambiarSeccion('usuarios')">
+            <i class="fas fa-users"></i> Usuarios
+            <span class="badge" id="usuariosBadge">0</span>
+        </a></li>
+        <li><a data-section="testimonios" onclick="cambiarSeccion('testimonios')">
+            <i class="fas fa-comment"></i> Testimonios
+            <span class="badge" id="testimoniosBadge">0</span>
+        </a></li>
+
+        <li class="menu-divider"></li>
+
+        <li class="menu-label">Seguridad</li>
+        <li><a data-section="seguridad" onclick="cambiarSeccion('seguridad')">
+            <i class="fas fa-shield-alt"></i> Protección
+            <span class="badge" id="seguridadBadge">0</span>
+        </a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <button class="btn-logout-sidebar" onclick="cerrarSesion()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+    </div>
+</nav>
+
+<div class="main-content" id="mainContent">
+
+    <div class="admin-header">
+        <div class="header-left">
+            <button class="btn-menu-toggle" id="btnMenuToggle" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="title-section">
+                <div class="title-icon"><i class="fas fa-spa"></i></div>
+                <div>
+                    <h1>Panel de Administración</h1>
+                    <span class="subtitle-admin">Gestiona tu negocio desde un solo lugar</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline" onclick="cambiarSeccion('seguridad')"><i class="fas fa-shield-alt"></i> Seguridad</button>
+            <button class="btn btn-success" id="btnGuardarConfig"><i class="fas fa-save"></i> Guardar Config</button>
+            <button class="btn btn-primary" id="btnAgregarServicio"><i class="fas fa-plus"></i> Agregar Servicio</button>
+        </div>
+    </div>
+
+    <div id="seccionesContainer"></div>
+</div>
+
+<div class="modal-overlay" id="modalServicio">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Agregar Servicio</h3>
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group"><label>Nombre *</label><input type="text" id="servicioNombre" placeholder="Masaje Relajante"></div>
+            <div class="form-group"><label>Precio *</label><input type="text" id="servicioPrecio" placeholder="$45"></div>
+            <div class="form-group"><label>Descripción *</label><textarea id="servicioDescripcion" rows="2"></textarea></div>
+            <div class="form-group"><label>URL del video</label><input type="text" id="servicioVideo" placeholder="https://www.youtube.com/embed/..."></div>
+            <div class="form-group"><label>Imagen Web</label><div class="image-upload-area" onclick="document.getElementById('inputFileWeb').click()"><i class="fas fa-cloud-upload-alt"></i><p>Clic para seleccionar</p><input type="file" id="inputFileWeb" accept="image/jpeg,image/png,image/webp" style="display:none"></div></div>
+            <div class="form-group"><label>Imagen WhatsApp (URL)</label><input type="text" id="servicioImagenWhatsApp" placeholder="https://..."></div>
+            <div class="form-group"><label>Beneficios</label><div class="input-group"><input type="text" id="nuevoBeneficio" placeholder="60 minutos"><button class="btn btn-outline" id="btnAgregarBeneficio">+</button></div><div class="dynamic-list" id="beneficiosList"></div></div>
+            <div class="form-group"><label>Efectos</label><div class="input-group"><input type="text" id="nuevoEfecto" placeholder="Relajación"><button class="btn btn-outline" id="btnAgregarEfecto">+</button></div><div class="dynamic-list" id="efectosList"></div></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-primary" id="btnGuardarServicio"><i class="fas fa-save"></i> Guardar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalWhatsApp">
+    <div class="modal">
+        <div class="modal-header">
+            <h3><i class="fab fa-whatsapp" style="color:#25D366;"></i> Mensaje WhatsApp</h3>
+            <button class="modal-close" onclick="closeWaModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Teléfono del cliente</label>
+                <input type="text" id="whatsappNumero" readonly style="background:#f3f4f8">
+            </div>
+            <div class="form-group">
+                <label>Mensaje a enviar</label>
+                <textarea id="whatsappMensaje" rows="8" readonly style="background:#f3f4f8;font-family:monospace;font-size:.75rem"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Imagen del servicio</label>
+                <div id="whatsappImagenPreview" style="max-width:200px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;padding:0.5rem;background:#f9fafb;">
+                    <img id="whatsappImagenMostrada" src="" alt="Imagen del servicio" style="width:100%;border-radius:4px;display:none;">
+                    <p style="font-size:.7rem;color:#9ca3af;text-align:center;margin:0;" id="whatsappSinImagen">Sin imagen</p>
+                </div>
+            </div>
+            <div style="background:#fef3c7;border-radius:8px;padding:.5rem .75rem;font-size:.7rem;color:#92400e;margin-top:.5rem;display:flex;align-items:center;gap:.5rem;">
+                <i class="fas fa-info-circle"></i>
+                <span>Al hacer clic en "Enviar", se abrirá WhatsApp con el mensaje prellenado.</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeWaModal()">Cerrar</button>
+            <button class="btn btn-whatsapp" id="btnEnviarWa"><i class="fab fa-whatsapp"></i> Enviar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+    // ============================================================
+    // VARIABLES GLOBALES
+    // ============================================================
+    let servicios = [];
+    let turnos = [];
+    let configData = {};
+    let editandoId = null;
+    let beneficiosTemp = [];
+    let efectosTemp = [];
+    let paisesData = { autorizados: [], bloqueados: [], modo: 'todos', ubicacionSalon: '' };
+    let palabrasBaneadas = [];
+    let horariosConfig = { dias: [], horarios: [], inicio: 8, fin: 20 };
+    let registroConfig = {};
+    let testimoniosData = [];
+    let whatsappTurnoId = null;
+    const HORARIOS_API = '/api/config/horarios';
+    const MODALIDADES_API = '/api/config/modalidades';
+
+    // ============================================================
+    // FUNCIONES DE AUTENTICACIÓN
+    // ============================================================
+    function getToken() { return sessionStorage.getItem('adminToken'); }
+
+    function escapeHtml(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function showToast(msg, type = 'success') {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.className = 'toast ' + type;
+        t.querySelector('i').className = type === 'error' ? 'fas fa-exclamation-circle' : type === 'warning' ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    async function verifyToken() {
+        const token = getToken();
+        if (!token) return false;
+        try {
+            const r = await fetch('/api/verify', { headers: { 'Authorization': 'Bearer ' + token } });
+            const data = await r.json();
+            if (!data.valid) { sessionStorage.removeItem('adminToken'); return false; }
+            return true;
+        } catch { return false; }
+    }
+
+    async function apiFetch(url, opts = {}) {
+        const token = getToken();
+        if (!token) { window.location.href = '/login.html'; throw new Error('No auth'); }
+        const r = await fetch(url, {
+            ...opts,
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...opts.headers }
+        });
+        if (r.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = '/login.html'; throw new Error('Sesión expirada'); }
+        return r;
+    }
+
+    function cerrarSesion() {
+        sessionStorage.removeItem('adminToken');
+        window.location.href = '/login.html';
+    }
+
+    // ============================================================
+    // MENÚ LATERAL
+    // ============================================================
+    let seccionActual = 'config';
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const main = document.getElementById('mainContent');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+        main.classList.toggle('shifted');
+    }
+
+    function cerrarSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const main = document.getElementById('mainContent');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        main.classList.remove('shifted');
+    }
+
+    document.getElementById('btnMenuToggle').addEventListener('click', toggleSidebar);
+    document.getElementById('sidebarOverlay').addEventListener('click', cerrarSidebar);
+
+    document.querySelectorAll('.sidebar-menu a').forEach(el => {
+        el.addEventListener('click', () => {
+            if (window.innerWidth <= 768) { cerrarSidebar(); }
+        });
+    });
+
+    // ============================================================
+    // AUTO-REFRESH PARA NOTIFICACIONES (CADA 30 SEGUNDOS)
+    // ============================================================
+    let refreshInterval = null;
+
+    function iniciarAutoRefresh() {
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
+        }
+        refreshInterval = setInterval(() => {
+            cargarDatosSilenciosamente();
+        }, 30000);
+    }
+
+    async function cargarDatosSilenciosamente() {
+        try {
+            const turnosResponse = await apiFetch('/turnos');
+            const nuevosTurnos = await turnosResponse.json();
+            turnos = nuevosTurnos;
+
+            const testimoniosResponse = await apiFetch('/api/admin/testimonios');
+            const nuevosTestimonios = await testimoniosResponse.json();
+            testimoniosData = nuevosTestimonios;
+
+            if (seccionActual === 'turnos') {
+                renderTurnosUI();
+            } else if (seccionActual === 'testimonios') {
+                renderTestimoniosUI(testimoniosData);
+            }
+
+            actualizarBadges();
+        } catch (e) {
+            console.warn('⚠️ Error en auto-refresh:', e);
+        }
+    }
+
+    function actualizarBadges() {
+        const turnosBadge = document.querySelector('.sidebar-menu a[data-section="turnos"] .badge');
+        if (turnosBadge) turnosBadge.textContent = turnos.length;
+
+        const testimoniosBadge = document.querySelector('.sidebar-menu a[data-section="testimonios"] .badge');
+        if (testimoniosBadge) testimoniosBadge.textContent = testimoniosData.length;
+    }
+
+    // ============================================================
+    // CAMBIAR SECCIÓN
+    // ============================================================
+    function cambiarSeccion(seccion) {
+        seccionActual = seccion;
+        document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
+        document.querySelector(`.sidebar-menu a[data-section="${seccion}"]`)?.classList.add('active');
+
+        const container = document.getElementById('seccionesContainer');
+        switch (seccion) {
+            case 'config': cargarConfiguracion(container); break;
+            case 'registro': cargarRegistro(container); break;
+            case 'servicios': cargarServicios(container); break;
+            case 'turnos': cargarTurnos(container); break;
+            case 'usuarios': cargarUsuarios(container); break;
+            case 'testimonios': cargarTestimoniosAdmin(container); break;
+            case 'seguridad': cargarSeguridad(container); break;
+            default: container.innerHTML = '<div class="config-panel"><p>Cargando...</p></div>';
+        }
+    }
+
+    // ============================================================
+    // CONFIGURACIÓN - CORREGIDA CON DOMINGO INCLUIDO
+    // ============================================================
+    function cargarConfiguracion(container) {
+        container.innerHTML = `
+            <div id="tabConfig">
+                <!-- Días y Horarios -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-calendar-alt"></i> Horarios y Días de Atención</h3>
+                    <div class="form-group">
+                        <label>Días de atención</label>
+                        <div id="diasContainer">
+                            <label class="dia-checkbox"><input type="checkbox" value="lunes"> Lunes</label>
+                            <label class="dia-checkbox"><input type="checkbox" value="martes"> Martes</label>
+                            <label class="dia-checkbox"><input type="checkbox" value="miercoles"> Miércoles</label>
+                            <label class="dia-checkbox"><input type="checkbox" value="jueves"> Jueves</label>
+                            <label class="dia-checkbox"><input type="checkbox" value="viernes"> Viernes</label>
+                            <label class="dia-checkbox"><input type="checkbox" value="sabado"> Sábado</label>
+                            <label class="dia-checkbox"><input type="checkbox" value="domingo"> Domingo</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Horarios disponibles</label>
+                        <div id="horariosList" style="margin-bottom:.5rem"></div>
+                        <div class="input-group">
+                            <input type="time" id="nuevoHorario" step="3600">
+                            <button class="btn btn-primary" id="btnAgregarHorario"><i class="fas fa-plus"></i> Agregar Horario</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" id="btnGuardarHorarios"><i class="fas fa-save"></i> Guardar Horarios</button>
+                </div>
+
+                <!-- RANGO HORARIO LABORAL -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-clock"></i> Rango Horario Laboral</h3>
+                    <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem;">Define el horario de apertura y cierre del salón.</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hora de inicio (apertura)</label>
+                            <input type="time" id="horaInicio" value="08:00">
+                        </div>
+                        <div class="form-group">
+                            <label>Hora de fin (cierre)</label>
+                            <input type="time" id="horaFin" value="20:00">
+                        </div>
+                    </div>
+                    <div class="info-intervalos">
+                        <div class="intervalo-item">
+                            <span class="icon">🏢</span>
+                            <span class="label">Salón:</span>
+                            <span class="value">Turnos cada 1 hora</span>
+                            <span class="sub">(30 min masaje + 30 min descanso)</span>
+                        </div>
+                        <div class="intervalo-item">
+                            <span class="icon">🚗</span>
+                            <span class="label">Domicilio:</span>
+                            <span class="value">Turnos cada 3 horas</span>
+                            <span class="sub">(30 min masaje + 2.5h traslado)</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btnGuardarRangoHorario"><i class="fas fa-save"></i> Guardar Rango Horario</button>
+                </div>
+
+                <!-- MODALIDADES DE SERVICIO -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-home"></i> Modalidades de Servicio</h3>
+                    <p style="font-size:.75rem;color:#6b7280;margin-bottom:.8rem;">Activa o desactiva los tipos de servicio que ofreces.</p>
+                    <div class="modalidad-toggle">
+                        <label id="labelSalon" class="activo">
+                            <input type="checkbox" id="modalSalon" checked>
+                            <i class="fas fa-building" style="color:#C9A961;"></i> En el salón
+                        </label>
+                        <label id="labelDomicilio" class="activo">
+                            <input type="checkbox" id="modalDomicilio" checked>
+                            <i class="fas fa-home" style="color:#C9A961;"></i> A domicilio
+                        </label>
+                    </div>
+                    <div style="font-size:.7rem;color:#6b7280;margin:.5rem 0 .8rem 0;">
+                        <span style="background:rgba(201,169,97,.1);padding:.2rem .6rem;border-radius:12px;margin-right:.5rem;">
+                            🏢 Salón: Turnos cada <strong>1 hora</strong>
+                        </span>
+                        <span style="background:rgba(201,169,97,.1);padding:.2rem .6rem;border-radius:12px;">
+                            🚗 Domicilio: Turnos cada <strong>3 horas</strong>
+                        </span>
+                    </div>
+                    <button class="btn btn-success" id="btnGuardarModalidades"><i class="fas fa-save"></i> Guardar Modalidades</button>
+                </div>
+
+                <!-- Sección Hero -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-image"></i> Sección Hero</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Título</label><input type="text" id="heroTitulo"></div>
+                        <div class="form-group"><label>Subtítulo</label><input type="text" id="heroSubtitulo"></div>
+                    </div>
+                    <div class="form-group"><label>Imagen de fondo (URL)</label><input type="text" id="heroImagen" placeholder="https://..."></div>
+                    <div class="form-group"><label>Texto Botón</label><input type="text" id="heroBoton"></div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-map-marker-alt"></i> Ubicación del Salón</h3>
+                    <div class="form-group">
+                        <label>Dirección del salón</label>
+                        <input type="text" id="ubicacionSalon" placeholder="Calle Principal #123, Ciudad">
+                    </div>
+                    <button class="btn btn-primary" id="btnGuardarUbicacion"><i class="fas fa-save"></i> Guardar Ubicación</button>
+                    <div class="direccion-salon-box" id="direccionSalonPreview" style="display:none;margin-top:.5rem;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1rem;">
+                        <label style="font-weight:600;color:#059669;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-check-circle"></i> Dirección actual del salón</label>
+                        <div class="direccion-text" id="direccionSalonMostrada" style="color:#1a2332;font-size:.95rem;margin-top:.3rem;padding:.5rem;background:white;border-radius:8px;border:1px solid #e5e7eb;">Cargando...</div>
+                    </div>
+                </div>
+
+                <!-- Servicios Section -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-tags"></i> Sección Servicios</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Etiqueta</label><input type="text" id="serviciosEtiqueta"></div>
+                        <div class="form-group"><label>Título</label><input type="text" id="serviciosTitulo"></div>
+                    </div>
+                    <div class="form-group"><label>Descripción</label><textarea id="serviciosDescripcion" rows="2"></textarea></div>
+                </div>
+
+                <!-- Contacto -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-comment-dots"></i> Sección Contacto</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Título</label><input type="text" id="contactoTitulo"></div>
+                        <div class="form-group"><label>Subtítulo</label><input type="text" id="contactoDescripcion"></div>
+                    </div>
+                </div>
+
+                <!-- Compartir -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-share-alt"></i> Sección Compartir</h3>
+                    <div class="form-group"><label>Título</label><input type="text" id="shareTitulo"></div>
+                </div>
+
+                <!-- IA -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-robot"></i> Configuración de IA</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Nombre del asistente</label><input type="text" id="iaNombre"></div>
+                        <div class="form-group">
+                            <label>Tono de voz</label>
+                            <select id="iaTono">
+                                <option value="cálido y profesional">Cálido y profesional</option>
+                                <option value="amigable y casual">Amigable y casual</option>
+                                <option value="formal y elegante">Formal y elegante</option>
+                                <option value="divertido y energético">Divertido y energético</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Estilo de comunicación</label><textarea id="iaEstilo" rows="2"></textarea></div>
+                    <div class="form-group"><label>Reglas (una por línea)</label><textarea id="iaReglas" rows="4"></textarea></div>
+                    <div style="display:flex;gap:.5rem">
+                        <button class="btn btn-primary" id="btnGuardarIA"><i class="fas fa-save"></i> Guardar Personalidad</button>
+                        <button class="btn btn-info" id="btnRecargarIA"><i class="fas fa-sync"></i> Recargar Conocimiento</button>
+                    </div>
+                </div>
+
+                <!-- Palabras Baneadas -->
+                <div class="config-panel">
+                    <h3><i class="fas fa-ban"></i> Palabras Baneadas</h3>
+                    <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem">Las palabras ofensivas detectadas bloquean automáticamente la IP.</p>
+                    <div class="form-group">
+                        <label>Agregar palabra ofensiva</label>
+                        <div class="input-group">
+                            <input type="text" id="nuevaPalabra" placeholder="Ej: insulto, grosería...">
+                            <button class="btn btn-danger" id="btnAgregarPalabra"><i class="fas fa-plus"></i> Agregar</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Lista de palabras baneadas</label>
+                        <div id="palabrasList" style="margin-top:.5rem;min-height:40px;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Cargar datos
+        cargarHorariosUI();
+        cargarConfigUI();
+        cargarPersonalidadIA();
+        cargarPalabrasBaneadasUI();
+        cargarUbicacionSalonUI();
+        cargarModalidadesUI();
+        cargarRangoHorarioUI();
+
+        // Event listeners
+        document.getElementById('btnGuardarHorarios').onclick = guardarHorarios;
+        document.getElementById('btnGuardarConfig').onclick = guardarConfig;
+        document.getElementById('btnGuardarUbicacion').onclick = guardarUbicacion;
+        document.getElementById('btnAgregarHorario').onclick = agregarHorario;
+        document.getElementById('btnAgregarPalabra').onclick = agregarPalabra;
+        document.getElementById('btnGuardarIA').onclick = guardarPersonalidadIA;
+        document.getElementById('btnRecargarIA').onclick = recargarConocimientoIA;
+        document.getElementById('btnGuardarModalidades').onclick = guardarModalidades;
+        document.getElementById('btnGuardarRangoHorario').onclick = guardarRangoHorario;
+    }
+
+    // ============================================================
+    // FUNCIONES UI - HORARIOS (CORREGIDAS CON DOMINGO)
+    // ============================================================
+    async function cargarHorariosUI() {
+        try {
+            console.log('📤 Cargando horarios desde admin...');
+            const r = await fetch(HORARIOS_API);
+            const data = await r.json();
+            
+            console.log('📥 Datos recibidos:', data);
+            
+            // ✅ Asegurar que días sea un array
+            let dias = data.dias || ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            if (!Array.isArray(dias)) {
+                dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            }
+            
+            // ✅ Normalizar a minúsculas
+            dias = dias.map(d => d.toLowerCase());
+            
+            horariosConfig = {
+                dias: dias,
+                horarios: data.horarios || ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'],
+                inicio: data.inicio || 8,
+                fin: data.fin || 20
+            };
+            
+            console.log('✅ Horarios configurados:', horariosConfig);
+            renderHorariosUI();
+        } catch(e) { 
+            console.warn('⚠️ Error cargando horarios:', e);
+            horariosConfig = { 
+                dias: ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'], 
+                horarios: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'],
+                inicio: 8,
+                fin: 20
+            };
+            renderHorariosUI();
+        }
+    }
+
+
+
+function renderHorariosUI() {
+    const diasContainer = document.getElementById('diasContainer');
+    if (diasContainer) {
+        console.log('📋 Días a renderizar:', horariosConfig.dias);
+        // ✅ Asegurar que horariosConfig.dias sea un array
+        const diasGuardados = horariosConfig.dias || [];
+        diasContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            // ✅ Comparar correctamente los valores (todos en minúsculas)
+            const checked = diasGuardados.some(d => d.toLowerCase() === cb.value.toLowerCase());
+            cb.checked = checked;
+            console.log(`  ${cb.value}: ${checked}`);
+        });
+    }
+    const horariosList = document.getElementById('horariosList');
+    if (horariosList) {
+        if (!horariosConfig.horarios || horariosConfig.horarios.length === 0) {
+            horariosList.innerHTML = '<span style="color:#9ca3af;font-size:.75rem;">No hay horarios configurados</span>';
+        } else {
+            horariosList.innerHTML = horariosConfig.horarios.map(h =>
+                `<span class="horario-item">${h} <button onclick="eliminarHorario('${h}')"><i class="fas fa-times-circle"></i></button></span>`
+            ).join('');
+        }
+    }
+}
+
+
+    
+
+    window.eliminarHorario = function(horario) {
+        horariosConfig.horarios = horariosConfig.horarios.filter(h => h !== horario);
+        renderHorariosUI();
+    };
+
+    function agregarHorario() {
+        const input = document.getElementById('nuevoHorario');
+        const valor = input.value;
+        if (!valor) { showToast('Seleccione un horario', 'error'); return; }
+        if (!horariosConfig.horarios.includes(valor)) {
+            horariosConfig.horarios.push(valor);
+            horariosConfig.horarios.sort();
+            renderHorariosUI();
+            input.value = '';
+        } else {
+            showToast('El horario ya existe', 'error');
+        }
+    }
+
+    async function guardarHorarios() {
+        try {
+            const dias = [];
+            document.querySelectorAll('#diasContainer input[type="checkbox"]:checked').forEach(cb => {
+                dias.push(cb.value.toLowerCase());
+            });
+            
+            console.log('📤 Guardando días seleccionados:', dias);
+            console.log('🔍 ¿Incluye "miercoles"?', dias.includes('miercoles'));
+            console.log('🔍 ¿Incluye "domingo"?', dias.includes('domingo'));
+            
+            if (dias.length === 0) {
+                showToast('⚠️ Selecciona al menos un día', 'warning');
+                return;
+            }
+            
+            const data = { 
+                dias: dias, 
+                horarios: horariosConfig.horarios || ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'],
+                inicio: horariosConfig.inicio || 8,
+                fin: horariosConfig.fin || 20
+            };
+            
+            console.log('📤 Enviando al servidor:', JSON.stringify(data, null, 2));
+            
+            const response = await apiFetch(HORARIOS_API, { 
+                method: 'PUT', 
+                body: JSON.stringify(data) 
+            });
+            
+            const result = await response.json();
+            console.log('📥 Respuesta del servidor:', result);
+            
+            if (result.success) {
+                showToast('✅ Horarios guardados correctamente');
+                horariosConfig = data;
+                renderHorariosUI();
+                await cargarHorariosUI();
+            } else {
+                showToast('❌ Error al guardar: ' + (result.error || 'Desconocido'), 'error');
+            }
+        } catch(e) { 
+            console.error('❌ Error en guardarHorarios:', e);
+            showToast('❌ Error al guardar', 'error'); 
+        }
+    }
+
+    // ============================================================
+    // FUNCIONES PARA RANGO HORARIO
+    // ============================================================
+    async function cargarRangoHorarioUI() {
+        try {
+            const response = await fetch(HORARIOS_API);
+            const data = await response.json();
+            if (data.inicio !== undefined) {
+                document.getElementById('horaInicio').value = String(data.inicio).padStart(2, '0') + ':00';
+            }
+            if (data.fin !== undefined) {
+                document.getElementById('horaFin').value = String(data.fin).padStart(2, '0') + ':00';
+            }
+        } catch(e) {
+            console.warn('Error cargando rango horario:', e);
+        }
+    }
+
+    async function guardarRangoHorario() {
+        try {
+            const inicioStr = document.getElementById('horaInicio').value;
+            const finStr = document.getElementById('horaFin').value;
+            
+            if (!inicioStr || !finStr) {
+                showToast('Selecciona ambas horas', 'error');
+                return;
+            }
+            
+            const inicio = parseInt(inicioStr.split(':')[0]);
+            const fin = parseInt(finStr.split(':')[0]);
+            
+            if (inicio >= fin) {
+                showToast('La hora de inicio debe ser menor que la de cierre', 'error');
+                return;
+            }
+            
+            let data = {};
+            try {
+                const response = await fetch(HORARIOS_API);
+                data = await response.json();
+            } catch(e) {}
+            
+            data.inicio = inicio;
+            data.fin = fin;
+            
+            const horarios = [];
+            for (let h = inicio; h < fin; h++) {
+                horarios.push(`${String(h).padStart(2, '0')}:00`);
+            }
+            data.horarios = horarios;
+            
+            await apiFetch(HORARIOS_API, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            
+            horariosConfig = data;
+            renderHorariosUI();
+            showToast('✅ Rango horario guardado');
+        } catch(e) {
+            showToast('❌ Error al guardar rango horario', 'error');
+        }
+    }
+
+    // ============================================================
+    // FUNCIONES PARA MODALIDADES
+    // ============================================================
+    async function cargarModalidadesUI() {
+        try {
+            const response = await apiFetch(MODALIDADES_API);
+            const data = await response.json();
+            document.getElementById('modalSalon').checked = data.salon?.activo !== false;
+            document.getElementById('modalDomicilio').checked = data.domicilio?.activo !== false;
+            
+            document.getElementById('labelSalon').className = document.getElementById('modalSalon').checked ? 'activo' : '';
+            document.getElementById('labelDomicilio').className = document.getElementById('modalDomicilio').checked ? 'activo' : '';
+        } catch(e) {
+            console.warn('Error cargando modalidades:', e);
+        }
+    }
+
+    async function guardarModalidades() {
+        try {
+            const salonActivo = document.getElementById('modalSalon').checked;
+            const domicilioActivo = document.getElementById('modalDomicilio').checked;
+            
+            if (!salonActivo && !domicilioActivo) {
+                showToast('Debes tener al menos una modalidad activa', 'error');
+                return;
+            }
+            
+            const data = {
+                salon: { activo: salonActivo },
+                domicilio: { activo: domicilioActivo }
+            };
+            await apiFetch(MODALIDADES_API, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            
+            document.getElementById('labelSalon').className = salonActivo ? 'activo' : '';
+            document.getElementById('labelDomicilio').className = domicilioActivo ? 'activo' : '';
+            
+            showToast('✅ Modalidades guardadas');
+        } catch(e) {
+            showToast('❌ Error al guardar modalidades', 'error');
+        }
+    }
+
+    // ============================================================
+    // CONFIGURACIÓN GENERAL
+    // ============================================================
+    async function cargarConfigUI() {
+        try {
+            const r = await fetch('/api/config');
+            const d = await r.json();
+            configData = d;
+            document.getElementById('heroTitulo').value = d.hero?.titulo || '';
+            document.getElementById('heroSubtitulo').value = d.hero?.subtitulo || '';
+            document.getElementById('heroImagen').value = d.hero?.imagenFondo || '';
+            document.getElementById('heroBoton').value = d.hero?.botonTexto || '';
+            document.getElementById('serviciosEtiqueta').value = d.serviciosSection?.etiqueta || '';
+            document.getElementById('serviciosTitulo').value = d.serviciosSection?.titulo || '';
+            document.getElementById('serviciosDescripcion').value = d.serviciosSection?.descripcion || '';
+            document.getElementById('contactoTitulo').value = d.contactoSection?.titulo || '';
+            document.getElementById('contactoDescripcion').value = d.contactoSection?.descripcion || '';
+            document.getElementById('shareTitulo').value = d.shareSection?.titulo || '';
+        } catch(e) { console.warn('Config:', e); }
+    }
+
+    async function guardarConfig() {
+        const cfg = {
+            hero: {
+                titulo: document.getElementById('heroTitulo').value,
+                subtitulo: document.getElementById('heroSubtitulo').value,
+                imagenFondo: document.getElementById('heroImagen').value,
+                botonTexto: document.getElementById('heroBoton').value
+            },
+            serviciosSection: {
+                etiqueta: document.getElementById('serviciosEtiqueta').value,
+                titulo: document.getElementById('serviciosTitulo').value,
+                descripcion: document.getElementById('serviciosDescripcion').value
+            },
+            contactoSection: {
+                titulo: document.getElementById('contactoTitulo').value,
+                descripcion: document.getElementById('contactoDescripcion').value
+            },
+            shareSection: {
+                titulo: document.getElementById('shareTitulo').value
+            }
+        };
+        try {
+            await apiFetch('/api/config', { method: 'PUT', body: JSON.stringify(cfg) });
+            showToast('Config guardada');
+        } catch(e) { showToast('Error al guardar', 'error'); }
+    }
+
+    // ============================================================
+    // UBICACIÓN SALÓN
+    // ============================================================
+    async function cargarUbicacionSalonUI() {
+        try {
+            const r = await apiFetch('/api/seguridad/paises');
+            const data = await r.json();
+            if (data.ubicacionSalon) {
+                document.getElementById('ubicacionSalon').value = data.ubicacionSalon;
+                const preview = document.getElementById('direccionSalonPreview');
+                const texto = document.getElementById('direccionSalonMostrada');
+                if (preview) preview.style.display = 'block';
+                if (texto) texto.textContent = data.ubicacionSalon;
+            }
+            paisesData = data;
+        } catch(e) { console.warn('Ubicación:', e); }
+    }
+
+    async function guardarUbicacion() {
+        const ubicacionSalon = document.getElementById('ubicacionSalon').value;
+        if (!ubicacionSalon.trim()) { showToast('Ingresa una dirección', 'error'); return; }
+        try {
+            await apiFetch('/api/seguridad/paises', { method: 'PUT', body: JSON.stringify({ ...paisesData, ubicacionSalon }) });
+            const preview = document.getElementById('direccionSalonPreview');
+            const texto = document.getElementById('direccionSalonMostrada');
+            if (preview) preview.style.display = 'block';
+            if (texto) texto.textContent = ubicacionSalon;
+            showToast('Ubicación guardada');
+        } catch(e) { showToast('Error al guardar', 'error'); }
+    }
+
+    // ============================================================
+    // REGISTRO
+    // ============================================================
+    function cargarRegistro(container) {
+        container.innerHTML = `
+            <div id="tabRegistro">
+                <div class="config-panel">
+                    <h3><i class="fas fa-pen-fancy"></i> Editar Contenido de Registro</h3>
+                    <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem;">Estos textos se muestran en la página <strong>registro.html</strong>.</p>
+                    <div class="form-group"><label>Título Hero</label><input type="text" id="registroHeroTitulo"></div>
+                    <div class="form-group"><label>Subtítulo Hero</label><input type="text" id="registroHeroSubtitulo"></div>
+                    <div class="form-group"><label>Texto Botón Hero</label><input type="text" id="registroHeroBoton"></div>
+                    <hr style="border-color:#e5e7eb;margin:1rem 0;">
+                    <div class="form-group">
+                        <label>Imagen para WhatsApp</label>
+                        <div class="image-upload-area" onclick="document.getElementById('registroImageInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Clic para seleccionar imagen</p>
+                            <input type="file" id="registroImageInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+                        </div>
+                        <div class="image-preview-container">
+                            <div class="image-preview-box empty" id="registroImagePreview">Sin imagen</div>
+                        </div>
+                        <div style="margin-top:.5rem;display:flex;gap:.5rem;">
+                            <input type="text" id="registroImagenUrl" placeholder="https://..." style="flex:1;padding:.6rem .8rem;border:1px solid #e5e7eb;border-radius:10px;font-family:inherit;">
+                            <button class="btn btn-info" onclick="previewRegistroImage()"><i class="fas fa-eye"></i></button>
+                        </div>
+                        <input type="hidden" id="registroImagenFinal">
+                    </div>
+                    <hr style="border-color:#e5e7eb;margin:1rem 0;">
+                    <h4 style="font-size:.9rem;color:#1a2332;margin-bottom:1rem;"><i class="fas fa-gem" style="color:#C9A961;"></i> Beneficios Exclusivos</h4>
+                    ${[1,2,3,4,5,6].map(i => `
+                        <div class="form-group">
+                            <label>Beneficio ${i}</label>
+                            <textarea id="registroBeneficio${i}" rows="2"></textarea>
+                        </div>
+                    `).join('')}
+                    <hr style="border-color:#e5e7eb;margin:1rem 0;">
+                    <h4 style="font-size:.9rem;color:#1a2332;margin-bottom:1rem;"><i class="fas fa-book-open" style="color:#C9A961;"></i> Conceptos básicos del masaje</h4>
+                    ${[1,2,3,4,5,6].map(i => `
+                        <div class="concept-edit-item" style="background:#f9fafb;border-radius:12px;padding:1rem;margin-bottom:.75rem;border:1px solid #e5e7eb;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+                                <span style="font-family:'Cinzel',serif;font-size:1.2rem;color:#C9A961;opacity:.5;">0${i}</span>
+                            </div>
+                            <div class="form-group"><label>Título</label><input type="text" id="registroConcepto${i}Titulo"></div>
+                            <div class="form-group"><label>Descripción</label><input type="text" id="registroConcepto${i}Desc"></div>
+                        </div>
+                    `).join('')}
+                    <div style="margin-top:1.5rem;display:flex;gap:.75rem;">
+                        <button class="btn btn-success" id="btnGuardarRegistro"><i class="fas fa-save"></i> Guardar Contenido Registro</button>
+                        <button class="btn btn-primary" id="btnVistaPreviaRegistro"><i class="fas fa-eye"></i> Vista Previa</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        cargarRegistroConfigUI();
+        document.getElementById('btnGuardarRegistro').onclick = guardarRegistroConfig;
+        document.getElementById('btnVistaPreviaRegistro').onclick = () => window.open('/registro.html?preview=1', '_blank');
+        document.getElementById('registroImageInput').addEventListener('change', function(e) { handleRegistroImageUpload(this); });
+    }
+
+    // ============================================================
+    // FUNCIONES UI - REGISTRO
+    // ============================================================
+    async function cargarRegistroConfigUI() {
+        try {
+            const r = await fetch('/api/config/registro');
+            const data = await r.json();
+            registroConfig = data;
+            if (data.hero) {
+                document.getElementById('registroHeroTitulo').value = data.hero.titulo || '';
+                document.getElementById('registroHeroSubtitulo').value = data.hero.subtitulo || '';
+                document.getElementById('registroHeroBoton').value = data.hero.boton || '';
+            }
+            if (data.imagenWhatsApp) {
+                document.getElementById('registroImagenUrl').value = data.imagenWhatsApp;
+                document.getElementById('registroImagenFinal').value = data.imagenWhatsApp;
+                const previewBox = document.getElementById('registroImagePreview');
+                if (previewBox) {
+                    previewBox.innerHTML = `<img src="${data.imagenWhatsApp}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;" onerror="this.parentElement.innerHTML='Error';this.parentElement.classList.add('empty')"><div class="preview-label">Imagen WhatsApp</div>`;
+                    previewBox.classList.remove('empty');
+                }
+            }
+            if (data.beneficios && Array.isArray(data.beneficios)) {
+                data.beneficios.forEach((b, i) => {
+                    const el = document.getElementById(`registroBeneficio${i+1}`);
+                    if (el) el.value = b.descripcion || '';
+                });
+            }
+            if (data.conceptos && Array.isArray(data.conceptos)) {
+                data.conceptos.forEach((c, i) => {
+                    const tituloEl = document.getElementById(`registroConcepto${i+1}Titulo`);
+                    const descEl = document.getElementById(`registroConcepto${i+1}Desc`);
+                    if (tituloEl) tituloEl.value = c.titulo || '';
+                    if (descEl) descEl.value = c.descripcion || '';
+                });
+            }
+        } catch(e) { console.warn('Error cargando registro config:', e); }
+    }
+
+    let registroImagenBase64 = null;
+
+    function handleRegistroImageUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) { showToast('Máx 5MB', 'error'); input.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = e => {
+            registroImagenBase64 = e.target.result;
+            document.getElementById('registroImagenUrl').value = '[Subida]';
+            document.getElementById('registroImagenFinal').value = e.target.result;
+            const previewBox = document.getElementById('registroImagePreview');
+            if (previewBox) {
+                previewBox.innerHTML = `<img src="${e.target.result}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;"><div class="preview-label">Imagen WhatsApp</div>`;
+                previewBox.classList.remove('empty');
+            }
+            showToast('Imagen cargada');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function previewRegistroImage() {
+        const url = document.getElementById('registroImagenUrl').value.trim();
+        if (url && url !== '[Subida]') {
+            registroImagenBase64 = null;
+            document.getElementById('registroImagenFinal').value = url;
+            const previewBox = document.getElementById('registroImagePreview');
+            if (previewBox) {
+                previewBox.innerHTML = `<img src="${url}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;" onerror="this.parentElement.innerHTML='Error';this.parentElement.classList.add('empty')"><div class="preview-label">Imagen WhatsApp</div>`;
+                previewBox.classList.remove('empty');
+            }
+        }
+    }
+
+    async function guardarRegistroConfig() {
+        try {
+            const heroTitulo = document.getElementById('registroHeroTitulo').value || '';
+            const heroSubtitulo = document.getElementById('registroHeroSubtitulo').value || '';
+            const heroBoton = document.getElementById('registroHeroBoton').value || '';
+            const beneficiosData = [];
+            for (let i = 1; i <= 6; i++) {
+                const el = document.getElementById(`registroBeneficio${i}`);
+                beneficiosData.push({ descripcion: el ? el.value : '' });
+            }
+            const conceptosData = [];
+            for (let i = 1; i <= 6; i++) {
+                const tituloEl = document.getElementById(`registroConcepto${i}Titulo`);
+                const descEl = document.getElementById(`registroConcepto${i}Desc`);
+                conceptosData.push({
+                    titulo: tituloEl ? tituloEl.value : '',
+                    descripcion: descEl ? descEl.value : ''
+                });
+            }
+            const imagenWhatsApp = document.getElementById('registroImagenFinal').value || 'https://i.postimg.cc/HWzhR73W/photo-1519823551278-64ac92734fb1.jpg';
+            const data = {
+                hero: { titulo: heroTitulo, subtitulo: heroSubtitulo, boton: heroBoton },
+                beneficios: beneficiosData,
+                conceptos: conceptosData,
+                imagenWhatsApp: imagenWhatsApp
+            };
+            const response = await apiFetch('/api/config/registro', { method: 'PUT', body: JSON.stringify(data) });
+            const result = await response.json();
+            if (result.success) {
+                showToast('✅ Contenido de registro guardado');
+                await cargarRegistroConfigUI();
+            } else {
+                showToast('❌ Error: ' + (result.error || 'Desconocido'), 'error');
+            }
+        } catch(e) {
+            console.error('Error guardando registro config:', e);
+            showToast('❌ Error al guardar', 'error');
+        }
+    }
+
+    // ============================================================
+    // FUNCIONES UI - SERVICIOS
+    // ============================================================
+    function cargarServicios(container) {
+        container.innerHTML = `
+            <div id="tabServicios">
+                <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+                    <button class="btn btn-primary" id="btnAgregarServicio"><i class="fas fa-plus"></i> Agregar Servicio</button>
+                    <button class="btn btn-outline" onclick="cargarServiciosUI()"><i class="fas fa-sync"></i> Recargar</button>
+                </div>
+                <div class="servicios-grid" id="serviciosGrid"></div>
+            </div>
+        `;
+
+        document.getElementById('btnAgregarServicio').onclick = () => {
+            editandoId = null;
+            beneficiosTemp = [];
+            efectosTemp = [];
+            resetModalFields();
+            document.getElementById('modalTitle').textContent = 'Agregar Servicio';
+            document.getElementById('modalServicio').classList.add('active');
+        };
+
+        cargarServiciosUI();
+    }
+
+    async function cargarServiciosUI() {
+        try {
+            const r = await fetch('/api/servicios');
+            servicios = await r.json();
+            renderServiciosUI();
+        } catch(e) { console.warn('Servicios:', e); }
+    }
+
+    function renderServiciosUI() {
+        const grid = document.getElementById('serviciosGrid');
+        if (!grid) return;
+        if (!servicios.length) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-spa fa-2x"></i><p>Sin servicios</p></div>';
+            return;
+        }
+        grid.innerHTML = servicios.map(s => {
+            const img = s.imagenWeb || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800";
+            const waTag = s.imagenWhatsApp ? '<span class="tag tag-success">WA: OK</span>' : '';
+            const videoTag = s.videoUrl ? '<span class="tag tag-info"><i class="fas fa-video"></i> Video</span>' : '';
+            return `<div class="servicio-card">
+                <img class="servicio-imagen" src="${img}" onerror="this.src='https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800'">
+                <div class="servicio-info">
+                    <div class="servicio-nombre">${escapeHtml(s.nombre)}</div>
+                    <div class="servicio-precio">${escapeHtml(s.precio)}</div>
+                    <div class="servicio-descripcion">${escapeHtml(s.descripcion)}</div>
+                    <div class="servicio-beneficios">${(s.beneficios || []).map(b => `<span class="tag">${escapeHtml(b)}</span>`).join('')} ${waTag} ${videoTag}</div>
+                    <div class="servicio-acciones">
+                        <button class="accion-btn editar" onclick="editarServicio('${s.id}')"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="accion-btn eliminar" onclick="eliminarServicio('${s.id}')"><i class="fas fa-trash"></i> Eliminar</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    window.editarServicio = async function(id) {
+        try {
+            const s = servicios.find(x => x.id === id);
+            if (!s) { showToast('Servicio no encontrado', 'error'); return; }
+            editandoId = id;
+            resetModalFields();
+            document.getElementById('modalTitle').textContent = 'Editar Servicio';
+            document.getElementById('servicioNombre').value = s.nombre || '';
+            document.getElementById('servicioPrecio').value = s.precio || '';
+            document.getElementById('servicioDescripcion').value = s.descripcion || '';
+            document.getElementById('servicioVideo').value = s.videoUrl || '';
+            document.getElementById('servicioImagenWhatsApp').value = s.imagenWhatsApp || '';
+            beneficiosTemp = [...(s.beneficios || [])];
+            efectosTemp = [...(s.efectos || [])];
+            renderBeneficiosUI();
+            renderEfectosUI();
+            document.getElementById('modalServicio').classList.add('active');
+        } catch(e) { showToast('Error al cargar servicio', 'error'); }
+    };
+
+    window.eliminarServicio = async function(id) {
+        if (!confirm('¿Eliminar este servicio permanentemente?')) return;
+        try {
+            await apiFetch(`/api/servicios/${id}`, { method: 'DELETE' });
+            showToast('Servicio eliminado');
+            await cargarServiciosUI();
+        } catch(e) { showToast('Error al eliminar', 'error'); }
+    };
+
+    function resetModalFields() {
+        ['servicioNombre', 'servicioPrecio', 'servicioDescripcion', 'servicioVideo', 'servicioImagenWhatsApp'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('inputFileWeb').value = '';
+    }
+
+    function renderBeneficiosUI() {
+        const list = document.getElementById('beneficiosList');
+        if (list) {
+            list.innerHTML = beneficiosTemp.map((b, i) =>
+                `<div class="dynamic-item">${escapeHtml(b)}<button onclick="beneficiosTemp.splice(${i},1);renderBeneficiosUI()"><i class="fas fa-times-circle"></i></button></div>`
+            ).join('');
+        }
+    }
+
+    function renderEfectosUI() {
+        const list = document.getElementById('efectosList');
+        if (list) {
+            list.innerHTML = efectosTemp.map((e, i) =>
+                `<div class="dynamic-item">✨ ${escapeHtml(e)}<button onclick="efectosTemp.splice(${i},1);renderEfectosUI()"><i class="fas fa-times-circle"></i></button></div>`
+            ).join('');
+        }
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'btnAgregarBeneficio') {
+            const input = document.getElementById('nuevoBeneficio');
+            if (input.value.trim()) { beneficiosTemp.push(input.value.trim()); renderBeneficiosUI(); input.value = ''; }
+        }
+        if (e.target.id === 'btnAgregarEfecto') {
+            const input = document.getElementById('nuevoEfecto');
+            if (input.value.trim()) { efectosTemp.push(input.value.trim()); renderEfectosUI(); input.value = ''; }
+        }
+        if (e.target.id === 'btnGuardarServicio') {
+            guardarServicio();
+        }
+    });
+
+    async function guardarServicio() {
+        try {
+            const nombre = document.getElementById('servicioNombre').value.trim();
+            const precio = document.getElementById('servicioPrecio').value.trim();
+            const desc = document.getElementById('servicioDescripcion').value.trim();
+            const video = document.getElementById('servicioVideo').value.trim();
+            const imagenWhatsApp = document.getElementById('servicioImagenWhatsApp').value.trim();
+
+            if (!nombre || !precio || !desc) {
+                showToast('Completá todos los campos obligatorios (*)', 'error');
+                return;
+            }
+
+            const data = {
+                nombre, precio, descripcion: desc,
+                beneficios: beneficiosTemp,
+                efectos: efectosTemp,
+                imagenWeb: document.getElementById('inputFileWeb').files[0] ? 
+                    URL.createObjectURL(document.getElementById('inputFileWeb').files[0]) : 
+                    "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800",
+                imagenWhatsApp: imagenWhatsApp || '',
+                videoUrl: video || ''
+            };
+
+            let response;
+            if (editandoId) {
+                response = await apiFetch(`/api/servicios/${editandoId}`, { method: 'PUT', body: JSON.stringify(data) });
+                if (response.ok) showToast('Servicio actualizado');
+                else { const err = await response.json(); showToast('Error: ' + err.error, 'error'); return; }
+            } else {
+                response = await apiFetch('/api/servicios', { method: 'POST', body: JSON.stringify(data) });
+                if (response.ok) showToast('Servicio creado');
+                else { const err = await response.json(); showToast('Error: ' + err.error, 'error'); return; }
+            }
+            closeModal();
+            await cargarServiciosUI();
+            editandoId = null;
+        } catch(e) { showToast('Error al guardar', 'error'); }
+    }
+
+    // ============================================================
+    // FUNCIONES UI - TURNOS
+    // ============================================================
+    function cargarTurnos(container) {
+        container.innerHTML = `
+            <div id="tabTurnos">
+                <div class="config-panel" style="margin-bottom:1rem;">
+                    <h3><i class="fas fa-info-circle"></i> Gestión de Turnos y Bloqueos</h3>
+                    <div class="info-bloqueo-acumulativo">
+                        <i class="fas fa-shield-alt" style="margin-right:.5rem;"></i>
+                        <strong>Sistema de bloqueos acumulativos por IP:</strong><br>
+                        <span class="badge-1">1ra vez</span> = 1 hora &nbsp;|&nbsp;
+                        <span class="badge-2">2da vez</span> = 2 horas &nbsp;|&nbsp;
+                        <span class="badge-3">3ra vez</span> = BLOQUEO PERMANENTE
+                    </div>
+                </div>
+                <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+                    <button class="btn btn-outline" onclick="cargarTurnosUI()"><i class="fas fa-sync"></i> Recargar Turnos</button>
+                </div>
+                <div class="turnos-grid" id="turnosGrid"></div>
+            </div>
+        `;
+
+        cargarTurnosUI();
+    }
+
+    async function cargarTurnosUI() {
+        try {
+            const r = await apiFetch('/turnos');
+            turnos = await r.json();
+            renderTurnosUI();
+            const badge = document.querySelector('.sidebar-menu a[data-section="turnos"] .badge');
+            if (badge) badge.textContent = turnos.length;
+        } catch(e) {
+            console.warn('Error cargando turnos:', e);
+            try {
+                const r = await fetch('/turnos');
+                if (r.ok) {
+                    turnos = await r.json();
+                    renderTurnosUI();
+                }
+            } catch(e2) { showToast('Error al cargar turnos', 'error'); }
+        }
+    }
+
+    function renderTurnosUI() {
+        const grid = document.getElementById('turnosGrid');
+        if (!grid) return;
+        if (!turnos || turnos.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-calendar fa-2x"></i><p>Sin turnos registrados</p></div>';
+            return;
+        }
+        const ahora = new Date();
+        grid.innerHTML = turnos.map(t => {
+            const waTag = t.confirmadoWhatsApp ? '<span class="tag tag-purple"><i class="fab fa-whatsapp"></i> Confirmado WA</span>' : '';
+            const codigoTag = t.codigoCancelacion ? `<span class="tag tag-info">🔑 ${t.codigoCancelacion}</span>` : '';
+            const paisTag = t.codigoPais ? `<span class="tag tag-info">+${t.codigoPais}</span>` : '';
+            const ipMostrar = t.ip || 'N/A';
+            let realizado = false;
+            try {
+                if (t.fecha && t.hora !== undefined) {
+                    const fechaTurno = new Date(t.fecha);
+                    if (!isNaN(fechaTurno.getTime())) {
+                        fechaTurno.setHours(parseInt(t.hora) || 0, 0, 0, 0);
+                        realizado = fechaTurno < ahora;
+                    }
+                }
+            } catch(e) {}
+            let borderStyle = '';
+            let estadoInfo = '';
+            if (realizado) {
+                borderStyle = 'border-left:4px solid #10b981;';
+                estadoInfo = `<div style="margin-bottom:0.5rem;"><span style="background:rgba(16,185,129,0.15);color:#10b981;font-weight:700;padding:0.2rem 0.7rem;border-radius:20px;display:inline-flex;align-items:center;gap:0.3rem;font-size:.7rem;"><i class="fas fa-check-circle"></i> REALIZADO</span></div>`;
+            }
+
+            return `<div class="turno-card" style="${borderStyle}">
+                <div class="turno-info">
+                    ${estadoInfo}
+                    <div class="turno-nombre">${escapeHtml(t.nombre)} ${codigoTag} ${waTag} ${paisTag}</div>
+                    <div class="turno-hora">💆‍♂️ ${escapeHtml(t.massageType || 'Masaje')}</div>
+                    <div class="turno-detalle">📅 ${escapeHtml(t.dia)} - ${t.hora}:00 hs</div>
+                    <div class="turno-detalle">📞 +${t.codigoPais || '53'} ${escapeHtml(t.telefono || '')}</div>
+                    <div class="turno-detalle">🖥️ IP: <code style="background:#f3f4f8;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;">${escapeHtml(ipMostrar)}</code></div>
+                    ${t.tipoServicio === 'domicilio' ? `<div class="turno-detalle">📍 ${escapeHtml(t.ubicacion)}</div>` : `<div class="turno-detalle">📍 En salón: ${escapeHtml(t.ubicacion)}</div>`}
+                    <div class="turno-acciones">
+                        <button class="accion-btn whatsapp" onclick="prepararWa('${t.id}')"><i class="fab fa-whatsapp"></i> WA</button>
+                        <button class="accion-btn eliminar" onclick="eliminarTurno('${t.id}')"><i class="fas fa-trash"></i> Eliminar</button>
+                        <button class="accion-btn block-ip" onclick="bloquearUsuarioIP('${t.id}')" title="Bloquear IP"><i class="fas fa-user-slash"></i> Bloquear IP</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    window.eliminarTurno = async function(id) {
+        if (!confirm('¿Eliminar turno?')) return;
+        try {
+            await apiFetch(`/turnos/${id}`, { method: 'DELETE' });
+            showToast('Turno eliminado');
+            cargarTurnosUI();
+        } catch(e) { showToast('Error al eliminar', 'error'); }
+    };
+
+    window.bloquearUsuarioIP = async function(id) {
+        const turno = turnos.find(t => t.id === id);
+        if (!turno) { showToast('Turno no encontrado', 'error'); return; }
+        const ipUsuario = turno.ip || 'IP desconocida';
+        if (!confirm(`⚠️ ¿Bloquear IP ${ipUsuario} del usuario ${turno.nombre}?`)) return;
+        try {
+            const response = await apiFetch(`/api/seguridad/bloquear-usuario/${id}`, { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                showToast(`✅ IP ${data.ip} bloqueada (${data.conteo}ra vez)`, 'warning');
+                await cargarTurnosUI();
+            } else { showToast('Error al bloquear', 'error'); }
+        } catch(e) { showToast('Error', 'error'); }
+    };
+
+    // ============================================================
+    // FUNCIONES UI - WHATSAPP
+    // ============================================================
+    window.prepararWa = async function(id) {
+        try {
+            whatsappTurnoId = id;
+            const response = await apiFetch(`/api/enviar-whatsapp/${id}`, { method: 'POST' });
+            const d = await response.json();
+            if (d.success) {
+                document.getElementById('whatsappNumero').value = d.numero;
+                document.getElementById('whatsappMensaje').value = d.mensaje;
+                const imgPreview = document.getElementById('whatsappImagenMostrada');
+                const sinImg = document.getElementById('whatsappSinImagen');
+                if (d.imagen) {
+                    imgPreview.src = d.imagen;
+                    imgPreview.style.display = 'block';
+                    sinImg.style.display = 'none';
+                } else {
+                    imgPreview.style.display = 'none';
+                    sinImg.style.display = 'block';
+                }
+                document.getElementById('modalWhatsApp').classList.add('active');
+                showToast('Mensaje preparado');
+            } else { showToast('Error: ' + d.error, 'error'); }
+        } catch(e) { showToast('Error al preparar', 'error'); }
+    };
+
+    document.getElementById('btnEnviarWa').addEventListener('click', function() {
+        const numero = document.getElementById('whatsappNumero').value;
+        const mensaje = document.getElementById('whatsappMensaje').value;
+        if (!numero || !mensaje) { showToast('No hay mensaje', 'error'); return; }
+        const numeroLimpio = numero.replace(/\D/g, '');
+        if (numeroLimpio.length < 5) { showToast('Número inválido', 'error'); return; }
+        window.open(`https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        if (whatsappTurnoId) {
+            apiFetch(`/api/turnos/${whatsappTurnoId}/whatsapp-enviado`, { method: 'POST' }).catch(() => {});
+        }
+        closeWaModal();
+        showToast('WhatsApp abierto');
+    });
+
+    function closeWaModal() {
+        document.getElementById('modalWhatsApp').classList.remove('active');
+        whatsappTurnoId = null;
+    }
+
+    // ============================================================
+    // FUNCIONES UI - USUARIOS
+    // ============================================================
+    function cargarUsuarios(container) {
+        container.innerHTML = `
+            <div id="tabUsuarios">
+                <div class="config-panel">
+                    <h3><i class="fas fa-users"></i> Gestión de Usuarios Registrados</h3>
+                    <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+                        <button class="btn btn-success" id="btnRecargarUsuarios"><i class="fas fa-sync"></i> Recargar Lista</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Estado</th><th>Fecha Reg.</th><th>Acciones</th></tr>
+                            </thead>
+                            <tbody id="tablaUsuariosBody"><tr><td colspan="6" style="text-align:center;padding:2rem;">Cargando usuarios...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('btnRecargarUsuarios').onclick = cargarUsuariosUI;
+        cargarUsuariosUI();
+    }
+
+    async function cargarUsuariosUI() {
+        try {
+            const response = await apiFetch('/api/usuarios');
+            const usuarios = await response.json();
+            const tbody = document.getElementById('tablaUsuariosBody');
+            if (!tbody) return;
+            const badge = document.querySelector('.sidebar-menu a[data-section="usuarios"] .badge');
+            if (badge) badge.textContent = usuarios.length;
+
+            if (usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;">No hay usuarios registrados.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = usuarios.map(u => {
+                const estado = u.bloqueado ?
+                    `<span class="tag tag-danger"><i class="fas fa-ban"></i> Bloqueado</span>` :
+                    `<span class="tag tag-success"><i class="fas fa-check-circle"></i> Activo</span>`;
+                return `<tr>
+                    <td><code style="background:#f3f4f8;padding:.2rem .4rem;border-radius:4px;font-size:.7rem;">${u.id.slice(0,8)}</code></td>
+                    <td>${escapeHtml(u.nombre)}</td>
+                    <td>${escapeHtml(u.email)}</td>
+                    <td>${estado}</td>
+                    <td>${new Date(u.fechaRegistro).toLocaleDateString()}</td>
+                    <td>
+                        <button class="accion-btn eliminar" onclick="eliminarUsuario('${u.id}')" style="min-width:auto;padding:.2rem .5rem;"><i class="fas fa-trash"></i></button>
+                        <button class="accion-btn ${u.bloqueado ? 'desbloquear' : 'bloquear-perm'}" onclick="toggleBloqueoUsuario('${u.id}')" style="min-width:auto;padding:.2rem .5rem;">
+                            <i class="fas ${u.bloqueado ? 'fa-unlock' : 'fa-ban'}"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch(e) {
+            console.error('Error cargando usuarios:', e);
+            const tbody = document.getElementById('tablaUsuariosBody');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#dc2626;">Error al cargar usuarios.</td></tr>';
+        }
+    }
+
+    window.eliminarUsuario = async function(id) {
+        if (!confirm('¿Eliminar este usuario permanentemente?')) return;
+        try {
+            await apiFetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+            showToast('Usuario eliminado');
+            cargarUsuariosUI();
+        } catch(e) { showToast('Error al eliminar', 'error'); }
+    };
+
+    window.toggleBloqueoUsuario = async function(id) {
+        const motivo = prompt('Motivo del bloqueo (opcional):');
+        try {
+            const response = await apiFetch(`/api/usuarios/${id}/bloquear`, {
+                method: 'PUT',
+                body: JSON.stringify({ motivo: motivo || '' })
+            });
+            const data = await response.json();
+            if (data.success) { showToast(data.message); cargarUsuariosUI(); }
+            else { showToast('Error', 'error'); }
+        } catch(e) { showToast('Error', 'error'); }
+    };
+
+    // ============================================================
+    // FUNCIONES UI - TESTIMONIOS
+    // ============================================================
+    function cargarTestimoniosAdmin(container) {
+        container.innerHTML = `
+            <div id="tabTestimonios">
+                <div class="config-panel">
+                    <h3><i class="fas fa-comment-dots"></i> Gestión de Testimonios</h3>
+                    <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem;">Los testimonios se muestran en formato lista profesional.</p>
+                    <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+                        <button class="btn btn-success" id="btnRecargarTestimonios"><i class="fas fa-sync"></i> Recargar Lista</button>
+                    </div>
+                    <div class="comentarios-container" id="testimoniosList">
+                        <div style="text-align:center;padding:1.5rem;color:#9ca3af;">Cargando testimonios...</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('btnRecargarTestimonios').onclick = cargarTestimoniosUI;
+        cargarTestimoniosUI();
+    }
+
+    async function cargarTestimoniosUI() {
+        try {
+            const response = await apiFetch('/api/admin/testimonios');
+            const testimonios = await response.json();
+            testimoniosData = testimonios;
+            renderTestimoniosUI(testimonios);
+            const badge = document.querySelector('.sidebar-menu a[data-section="testimonios"] .badge');
+            if (badge) badge.textContent = testimonios.length;
+        } catch(e) {
+            console.error('Error cargando testimonios:', e);
+            const list = document.getElementById('testimoniosList');
+            if (list) list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#dc2626;">Error al cargar testimonios.</div>';
+        }
+    }
+
+    function renderTestimoniosUI(testimonios) {
+        const list = document.getElementById('testimoniosList');
+        if (!list) return;
+        if (!testimonios || testimonios.length === 0) {
+            list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#9ca3af;">No hay testimonios registrados.</div>';
+            return;
+        }
+        list.innerHTML = testimonios.map(t => {
+            const estrellas = '⭐'.repeat(t.calificacion) + '☆'.repeat(5 - t.calificacion);
+            const estado = t.publico !== false ?
+                `<span class="tag tag-success">Público</span>` :
+                `<span class="tag tag-warning">Privado</span>`;
+            return `
+            <div class="comentario-item" data-id="${t.id}">
+                <div class="comentario-contenido">
+                    <div class="comentario-header">
+                        <span class="comentario-nombre">${escapeHtml(t.nombre)}</span>
+                        <span class="comentario-estrellas">${estrellas}</span>
+                        <span class="comentario-fecha">${new Date(t.fecha).toLocaleDateString()}</span>
+                        <span class="comentario-estado">${estado}</span>
+                    </div>
+                    <div class="comentario-texto">"${escapeHtml(t.comentario)}"</div>
+                </div>
+                <div class="comentario-acciones">
+                    ${t.publico !== false ?
+                        `<button class="btn-privado" onclick="togglePublicoTestimonio('${t.id}', false)" title="Hacer privado"><i class="fas fa-eye-slash"></i></button>` :
+                        `<button class="btn-publicar" onclick="togglePublicoTestimonio('${t.id}', true)" title="Hacer público"><i class="fas fa-eye"></i></button>`
+                    }
+                    <button class="btn-eliminar" onclick="eliminarTestimonio('${t.id}')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    window.eliminarTestimonio = async function(id) {
+        if (!confirm('¿Eliminar este testimonio permanentemente?')) return;
+        try {
+            await apiFetch(`/api/admin/testimonios/${id}`, { method: 'DELETE' });
+            showToast('Testimonio eliminado');
+            cargarTestimoniosUI();
+        } catch(e) { showToast('Error al eliminar', 'error'); }
+    };
+
+    window.togglePublicoTestimonio = async function(id, publico) {
+        try {
+            await apiFetch(`/api/admin/testimonios/${id}/publico`, {
+                method: 'PUT',
+                body: JSON.stringify({ publico })
+            });
+            showToast(publico ? 'Testimonio publicado' : 'Testimonio oculto');
+            cargarTestimoniosUI();
+        } catch(e) { showToast('Error al cambiar estado', 'error'); }
+    };
+
+    // ============================================================
+    // FUNCIONES UI - SEGURIDAD
+    // ============================================================
+    function cargarSeguridad(container) {
+        container.innerHTML = `
+            <div id="tabSeguridad">
+                <div class="stats-bar">
+                    <div class="stat-card danger"><div class="stat-value" id="statBloqueosActivos">0</div><div class="stat-label"><i class="fas fa-ban"></i> IPs Bloqueadas</div></div>
+                    <div class="stat-card warning"><div class="stat-value" id="statIntentosFallidos">0</div><div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Intentos Fallidos</div></div>
+                    <div class="stat-card info"><div class="stat-value" id="statPaisesBloqueados">0</div><div class="stat-label"><i class="fas fa-globe-americas"></i> Países Bloqueados</div></div>
+                    <div class="stat-card"><div class="stat-value" id="statHistorial">0</div><div class="stat-label"><i class="fas fa-history"></i> Registros Históricos</div></div>
+                </div>
+
+                <div class="config-panel" style="background:#f9fafb">
+                    <h3><i class="fas fa-toggle-on"></i> Modo de Seguridad</h3>
+                    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+                        <span id="securityModeBadge" class="security-mode-badge active">
+                            <i class="fas fa-shield-alt"></i> <span id="securityModeText">Protección Activa</span>
+                        </span>
+                        <button class="btn btn-danger" id="btnToggleSecurity" style="font-size:.75rem;">
+                            <i class="fas fa-power-off"></i> <span id="btnSecurityText">Desactivar Protección</span>
+                        </button>
+                    </div>
+                    <p style="font-size:.7rem;color:#6b7280;margin-top:.5rem;">Cuando la protección está activa, se bloquean automáticamente las IPs sospechosas.</p>
+                </div>
+
+                <div class="section-actions">
+                    <button class="btn btn-warning" id="btnLimpiarExpirados"><i class="fas fa-broom"></i> Limpiar Bloqueos Expirados</button>
+                    <button class="btn btn-danger" id="btnLimpiarTodo"><i class="fas fa-trash"></i> Limpiar Todos los Bloqueos</button>
+                    <button class="btn btn-dark" id="btnExportarLog"><i class="fas fa-download"></i> Exportar Registros</button>
+                </div>
+
+                <div class="config-panel">
+                    <h3><i class="fas fa-ban"></i> IPs Bloqueadas Activamente</h3>
+                    <div id="bloqueosActivosContainer"><div class="empty-state"><i class="fas fa-check-circle fa-2x" style="color:#059669;"></i><p>No hay IPs bloqueadas actualmente</p></div></div>
+                </div>
+
+                <div class="config-panel">
+                    <h3><i class="fas fa-globe-americas"></i> Control de Países</h3>
+                    <p style="font-size:.75rem;color:#6b7280;margin-bottom:1rem;">Gestioná qué países pueden reservar turnos.</p>
+                    <div class="form-row" style="margin-bottom:1rem;">
+                        <div class="form-group">
+                            <label>Modo de operación</label>
+                            <select id="modoPaises">
+                                <option value="todos">Permitir todos (excepto bloqueados)</option>
+                                <option value="solo_autorizados">Solo países autorizados</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row" style="align-items:end;">
+                        <div class="form-group">
+                            <label>Agregar país a lista</label>
+                            <select id="selectPais">
+                                <option value="">Seleccionar país...</option>
+                                <option value="53">Cuba (+53)</option>
+                                <option value="54">Argentina (+54)</option>
+                                <option value="52">México (+52)</option>
+                                <option value="57">Colombia (+57)</option>
+                                <option value="56">Chile (+56)</option>
+                                <option value="51">Perú (+51)</option>
+                                <option value="34">España (+34)</option>
+                                <option value="1">EE.UU. (+1)</option>
+                                <option value="58">Venezuela (+58)</option>
+                                <option value="593">Ecuador (+593)</option>
+                                <option value="598">Uruguay (+598)</option>
+                                <option value="595">Paraguay (+595)</option>
+                                <option value="55">Brasil (+55)</option>
+                                <option value="39">Italia (+39)</option>
+                                <option value="33">Francia (+33)</option>
+                                <option value="49">Alemania (+49)</option>
+                                <option value="otro">Otro (código manual)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="codigoManualGroup" style="display:none;">
+                            <label>Código de país</label>
+                            <input type="text" id="codigoManual" placeholder="+53">
+                        </div>
+                        <div class="form-group" style="display:flex;gap:.5rem;align-items:end;">
+                            <button class="btn btn-success" id="btnAutorizarPais"><i class="fas fa-check"></i> Autorizar</button>
+                            <button class="btn btn-danger" id="btnBloquearPais"><i class="fas fa-ban"></i> Bloquear</button>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-top:1.5rem;">
+                        <div style="flex:1;">
+                            <h4 style="font-size:.85rem;color:#059669;margin-bottom:.5rem;">✅ Autorizados (<span id="countAutorizados">0</span>)</h4>
+                            <div id="listaAutorizados" style="display:flex;flex-wrap:wrap;gap:.5rem;min-height:40px;"><span style="color:#9ca3af;font-size:.75rem;">Ninguno</span></div>
+                        </div>
+                        <div style="flex:1;">
+                            <h4 style="font-size:.85rem;color:#dc2626;margin-bottom:.5rem;">🚫 Bloqueados (<span id="countBloqueados">0</span>)</h4>
+                            <div id="listaBloqueados" style="display:flex;flex-wrap:wrap;gap:.5rem;min-height:40px;"><span style="color:#9ca3af;font-size:.75rem;">Ninguno</span></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:1.5rem;">
+                        <h4 style="font-size:.85rem;color:#1a2332;margin-bottom:.5rem;">📊 Reservas por país</h4>
+                        <div id="statsPaises" style="display:flex;flex-wrap:wrap;gap:.5rem;"><span style="color:#9ca3af;font-size:.75rem;">Cargando...</span></div>
+                    </div>
+                </div>
+
+                <div class="config-panel">
+                    <h3><i class="fas fa-history"></i> Historial de Bloqueos</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>IP</th><th>Tipo</th><th>Motivo</th><th>Fecha</th><th>Intentos</th><th>Estado</th><th>Acción</th></tr></thead>
+                            <tbody id="tablaHistorialBody"><tr><td colspan="7" style="text-align:center;padding:2rem;">Sin registros</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('btnToggleSecurity').onclick = toggleSeguridad;
+        document.getElementById('btnLimpiarExpirados').onclick = limpiarExpirados;
+        document.getElementById('btnLimpiarTodo').onclick = limpiarTodo;
+        document.getElementById('btnExportarLog').onclick = exportarLog;
+        document.getElementById('btnAutorizarPais').onclick = autorizarPais;
+        document.getElementById('btnBloquearPais').onclick = bloquearPais;
+        document.getElementById('modoPaises').onchange = cambiarModoPaises;
+        document.getElementById('selectPais').onchange = function() {
+            document.getElementById('codigoManualGroup').style.display = this.value === 'otro' ? 'block' : 'none';
+        };
+
+        cargarSeguridadUI();
+        cargarPaisesUI();
+    }
+
+    async function cargarSeguridadUI() {
+        try {
+            const r = await apiFetch('/api/seguridad/bloqueos');
+            const data = await r.json();
+            const a = data.activos || [];
+            const h = data.historial || [];
+            const i = data.intentosFallidos || {};
+            
+            document.getElementById('statBloqueosActivos').textContent = a.length;
+            document.getElementById('statIntentosFallidos').textContent = Object.keys(i).length;
+            document.getElementById('statHistorial').textContent = h.length;
+            document.getElementById('statPaisesBloqueados').textContent = paisesData.bloqueados?.length || 0;
+
+            const c = document.getElementById('bloqueosActivosContainer');
+            if (!c) return;
+            if (!a.length) {
+                c.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle fa-2x" style="color:#059669;"></i><p>No hay IPs bloqueadas actualmente</p></div>';
+            } else {
+                c.innerHTML = '<div class="seguridad-grid">' + a.map(b => {
+                    const tipoColor = b.permanente ? '#dc2626' : '#f59e0b';
+                    return `<div class="bloqueo-card" style="border-left:4px solid ${tipoColor}">
+                        <div class="bloqueo-info">
+                            <div class="bloqueo-ip"><i class="fas fa-globe"></i> ${escapeHtml(b.ip)}</div>
+                            <div style="margin:.5rem 0;">
+                                <span class="tag tag-danger">${escapeHtml(b.tipoAtaque || 'Desconocido')}</span>
+                                ${b.permanente ? '<span class="tag tag-danger">PERMANENTE</span>' : ''}
+                            </div>
+                            <div class="bloqueo-detalle"><strong>Motivo:</strong> ${escapeHtml(b.motivo)}</div>
+                            <div class="bloqueo-acciones">
+                                <button class="accion-btn desbloquear" onclick="desbloquearIP('${b.ip}')"><i class="fas fa-unlock"></i> Desbloquear</button>
+                                <button class="accion-btn eliminar-reg" onclick="eliminarBloqueo('${b.ip}')"><i class="fas fa-trash"></i> Eliminar</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('') + '</div>';
+            }
+
+            const tb = document.getElementById('tablaHistorialBody');
+            if (!tb) return;
+            if (!h.length) {
+                tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Sin registros</td></tr>';
+            } else {
+                tb.innerHTML = h.slice(0, 100).map(x => {
+                    const exp = Date.now() > new Date(x.hasta || x.fecha).getTime() + 3600000;
+                    return `<tr>
+                        <td><code style="background:#f3f4f8;padding:.2rem .4rem;border-radius:4px;">${escapeHtml(x.ip)}</code></td>
+                        <td><span class="tag tag-danger">${escapeHtml(x.tipoAtaque || '?')}</span></td>
+                        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(x.motivo)}</td>
+                        <td>${new Date(x.fecha).toLocaleString()}</td>
+                        <td>${x.intentos || 0}</td>
+                        <td>${exp ? '<span class="tag tag-success">Expirado</span>' : '<span class="tag tag-warning">Activo</span>'}</td>
+                        <td><button class="accion-btn eliminar-reg" style="min-width:auto;padding:.2rem .4rem;" onclick="eliminarHistorial('${x.id}')"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
+                }).join('');
+            }
+        } catch(e) { console.warn('Seguridad:', e); }
+    }
+
+    // ============================================================
+    // FUNCIONES UI - PAÍSES
+    // ============================================================
+    async function cargarPaisesUI() {
+        try {
+            const r = await apiFetch('/api/seguridad/paises');
+            paisesData = await r.json();
+            document.getElementById('ubicacionSalon').value = paisesData.ubicacionSalon || '';
+            if (paisesData.ubicacionSalon) {
+                const preview = document.getElementById('direccionSalonPreview');
+                const texto = document.getElementById('direccionSalonMostrada');
+                if (preview) preview.style.display = 'block';
+                if (texto) texto.textContent = paisesData.ubicacionSalon;
+            }
+            renderPaisesUI();
+            cargarStatsPaisesUI();
+        } catch(e) { console.warn('Países:', e); }
+    }
+
+    function renderPaisesUI() {
+        const modoSelect = document.getElementById('modoPaises');
+        if (modoSelect) modoSelect.value = paisesData.modo || 'todos';
+
+        const listaAuth = document.getElementById('listaAutorizados');
+        const countAuth = document.getElementById('countAutorizados');
+        if (countAuth) countAuth.textContent = paisesData.autorizados?.length || 0;
+        if (listaAuth) {
+            if (!paisesData.autorizados || paisesData.autorizados.length === 0) {
+                listaAuth.innerHTML = '<span style="color:#9ca3af;font-size:.75rem;">Ninguno (todos permitidos)</span>';
+            } else {
+                listaAuth.innerHTML = paisesData.autorizados.map(c =>
+                    `<span class="tag tag-success" style="cursor:pointer;" onclick="quitarPais('${c}')">+${c} <i class="fas fa-times" style="font-size:.6rem;margin-left:3px;"></i></span>`
+                ).join('');
+            }
+        }
+
+        const listaBloq = document.getElementById('listaBloqueados');
+        const countBloq = document.getElementById('countBloqueados');
+        if (countBloq) countBloq.textContent = paisesData.bloqueados?.length || 0;
+        if (listaBloq) {
+            if (!paisesData.bloqueados || paisesData.bloqueados.length === 0) {
+                listaBloq.innerHTML = '<span style="color:#9ca3af;font-size:.75rem;">Ninguno</span>';
+            } else {
+                listaBloq.innerHTML = paisesData.bloqueados.map(c =>
+                    `<span class="tag tag-danger" style="cursor:pointer;" onclick="quitarPais('${c}')">+${c} <i class="fas fa-times" style="font-size:.6rem;margin-left:3px;"></i></span>`
+                ).join('');
+            }
+        }
+    }
+
+    async function autorizarPais() {
+        const select = document.getElementById('selectPais');
+        let codigo = select.value;
+        if (codigo === 'otro') { codigo = document.getElementById('codigoManual').value.replace(/\D/g, ''); }
+        if (!codigo || !/^\d{1,3}$/.test(codigo)) { showToast('Código inválido', 'error'); return; }
+        const nombre = select.options[select.selectedIndex]?.text || codigo;
+        try {
+            await apiFetch('/api/seguridad/paises/autorizar', { method: 'POST', body: JSON.stringify({ codigo, nombre }) });
+            showToast(`${nombre} autorizado`);
+            await cargarPaisesUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    async function bloquearPais() {
+        const select = document.getElementById('selectPais');
+        let codigo = select.value;
+        if (codigo === 'otro') { codigo = document.getElementById('codigoManual').value.replace(/\D/g, ''); }
+        if (!codigo || !/^\d{1,3}$/.test(codigo)) { showToast('Código inválido', 'error'); return; }
+        const nombre = select.options[select.selectedIndex]?.text || codigo;
+        if (!confirm(`¿Bloquear ${nombre}? No podrán reservar turnos.`)) return;
+        try {
+            await apiFetch('/api/seguridad/paises/bloquear', { method: 'POST', body: JSON.stringify({ codigo, nombre }) });
+            showToast(`${nombre} bloqueado`);
+            await cargarPaisesUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    async function quitarPais(codigo) {
+        if (!confirm(`¿Quitar +${codigo} de todas las listas?`)) return;
+        try {
+            await apiFetch(`/api/seguridad/paises/${codigo}`, { method: 'DELETE' });
+            showToast(`+${codigo} eliminado`);
+            await cargarPaisesUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    async function cambiarModoPaises() {
+        try {
+            await apiFetch('/api/seguridad/paises', { method: 'PUT', body: JSON.stringify({ modo: document.getElementById('modoPaises').value }) });
+            showToast('Modo actualizado');
+            await cargarPaisesUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    async function cargarStatsPaisesUI() {
+        try {
+            const r = await apiFetch('/api/seguridad/paises/stats');
+            const stats = await r.json();
+            const container = document.getElementById('statsPaises');
+            if (!container) return;
+            if (!stats.length) { container.innerHTML = '<span style="color:#9ca3af;font-size:.75rem;">Sin reservas aún</span>'; return; }
+            container.innerHTML = stats.map(s =>
+                `<span class="tag" style="background:rgba(201,169,97,.1);color:#1a2332;font-weight:500;">${s.nombre || 'Desconocido'} (+${s.codigo}): ${s.reservas}</span>`
+            ).join('');
+        } catch(e) { console.warn('Stats países:', e); }
+    }
+
+    // ============================================================
+    // FUNCIONES UI - PALABRAS BANEADAS
+    // ============================================================
+    async function cargarPalabrasBaneadasUI() {
+        try {
+            const r = await apiFetch('/api/palabras-baneadas');
+            const data = await r.json();
+            palabrasBaneadas = data.palabras || [];
+            renderPalabrasBaneadasUI();
+        } catch(e) { console.warn('Palabras baneadas:', e); }
+    }
+
+    function renderPalabrasBaneadasUI() {
+        const container = document.getElementById('palabrasList');
+        if (!container) return;
+        if (palabrasBaneadas.length === 0) {
+            container.innerHTML = '<span style="color:#9ca3af;font-size:.75rem;">No hay palabras baneadas</span>';
+        } else {
+            container.innerHTML = palabrasBaneadas.map(p =>
+                `<span class="palabra-item">🔇 ${escapeHtml(p)} <button onclick="eliminarPalabraUI('${escapeHtml(p)}')"><i class="fas fa-times-circle"></i></button></span>`
+            ).join('');
+        }
+    }
+
+    async function agregarPalabra() {
+        const input = document.getElementById('nuevaPalabra');
+        const palabra = input.value.trim().toLowerCase();
+        if (!palabra || palabra.length < 2) { showToast('Mínimo 2 caracteres', 'error'); return; }
+        if (palabrasBaneadas.includes(palabra)) { showToast('Ya existe', 'error'); return; }
+        try {
+            await apiFetch('/api/palabras-baneadas', { method: 'POST', body: JSON.stringify({ palabra, accion: 'agregar' }) });
+            showToast(`"${palabra}" agregada`);
+            input.value = '';
+            await cargarPalabrasBaneadasUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    window.eliminarPalabraUI = async function(palabra) {
+        if (!confirm(`¿Eliminar "${palabra}"?`)) return;
+        try {
+            await apiFetch('/api/palabras-baneadas', { method: 'POST', body: JSON.stringify({ palabra, accion: 'eliminar' }) });
+            showToast(`"${palabra}" eliminada`);
+            await cargarPalabrasBaneadasUI();
+        } catch(e) { showToast('Error', 'error'); }
+    };
+
+    // ============================================================
+    // FUNCIONES UI - IA
+    // ============================================================
+    async function cargarPersonalidadIA() {
+        try {
+            const r = await apiFetch('/api/ia/personalidad');
+            const p = await r.json();
+            document.getElementById('iaNombre').value = p.nombre || '';
+            document.getElementById('iaTono').value = p.tono || 'cálido y profesional';
+            document.getElementById('iaEstilo').value = p.estilo || '';
+            document.getElementById('iaReglas').value = (p.reglas || []).join('\n');
+        } catch(e) { console.warn('IA:', e); }
+    }
+
+    async function guardarPersonalidadIA() {
+        const data = {
+            nombre: document.getElementById('iaNombre').value.trim(),
+            tono: document.getElementById('iaTono').value,
+            estilo: document.getElementById('iaEstilo').value.trim(),
+            reglas: document.getElementById('iaReglas').value.split('\n').filter(r => r.trim())
+        };
+        try {
+            await apiFetch('/api/ia/personalidad', { method: 'PUT', body: JSON.stringify(data) });
+            showToast('Personalidad de IA guardada');
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    async function recargarConocimientoIA() {
+        try {
+            const r = await apiFetch('/api/ia/recargar', { method: 'POST' });
+            const d = await r.json();
+            showToast(`Conocimiento recargado (${d.items} items)`);
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    // ============================================================
+    // FUNCIONES DE SEGURIDAD
+    // ============================================================
+    let seguridadActiva = true;
+
+    window.desbloquearIP = async function(ip) {
+        if (!confirm(`¿Desbloquear ${ip}?`)) return;
+        try {
+            const response = await apiFetch(`/api/seguridad/desbloquear/${ip}`, { method: 'POST' });
+            const data = await response.json();
+            if (data.ok) { showToast('IP desbloqueada'); cargarSeguridadUI(); }
+            else { showToast(data.mensaje || 'Error', 'error'); }
+        } catch(e) { showToast('Error', 'error'); }
+    };
+
+    window.eliminarBloqueo = async function(ip) {
+        if (!confirm(`¿Eliminar bloqueo de ${ip}?`)) return;
+        try {
+            await apiFetch(`/api/seguridad/bloqueos/${ip}`, { method: 'DELETE' });
+            showToast('Bloqueo eliminado');
+            cargarSeguridadUI();
+        } catch(e) { showToast('Error', 'error'); }
+    };
+
+    window.eliminarHistorial = async function(id) {
+        if (!confirm('¿Eliminar registro del historial?')) return;
+        try {
+            await apiFetch(`/api/seguridad/historial/${id}`, { method: 'DELETE' });
+            showToast('Registro eliminado');
+            cargarSeguridadUI();
+        } catch(e) { showToast('Error', 'error'); }
+    };
+
+    function toggleSeguridad() {
+        seguridadActiva = !seguridadActiva;
+        const badge = document.getElementById('securityModeBadge');
+        const text = document.getElementById('securityModeText');
+        const btnText = document.getElementById('btnSecurityText');
+        if (seguridadActiva) {
+            badge.className = 'security-mode-badge active';
+            text.textContent = 'Protección Activa';
+            btnText.textContent = 'Desactivar Protección';
+            showToast('Protección ACTIVADA');
+        } else {
+            badge.className = 'security-mode-badge inactive';
+            text.textContent = 'Protección Desactivada';
+            btnText.textContent = 'Activar Protección';
+            showToast('⚠️ Protección DESACTIVADA', 'warning');
+        }
+    }
+
+    async function limpiarExpirados() {
+        try {
+            const r = await apiFetch('/api/seguridad/limpiar-expirados', { method: 'POST' });
+            const d = await r.json();
+            showToast(d.mensaje || 'Bloqueos expirados eliminados');
+            cargarSeguridadUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    async function limpiarTodo() {
+        if (!confirm('⚠️ ¿Eliminar TODOS los bloqueos activos? No se puede deshacer.')) return;
+        try {
+            const r = await apiFetch('/api/seguridad/limpiar-todo', { method: 'POST' });
+            const d = await r.json();
+            showToast(d.mensaje || 'Todos los bloqueos eliminados');
+            cargarSeguridadUI();
+        } catch(e) { showToast('Error', 'error'); }
+    }
+
+    function exportarLog() {
+        const data = {
+            exportado: new Date().toISOString(),
+            paises: paisesData
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `serenity-seguridad-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Registros exportados');
+    }
+
+    // ============================================================
+    // MODALES
+    // ============================================================
+    function closeModal() {
+        document.getElementById('modalServicio').classList.remove('active');
+        editandoId = null;
+        beneficiosTemp = [];
+        efectosTemp = [];
+        renderBeneficiosUI();
+        renderEfectosUI();
+    }
+
+    function closeWaModal() {
+        document.getElementById('modalWhatsApp').classList.remove('active');
+        whatsappTurnoId = null;
+    }
+
+    // ============================================================
+    // INICIO
+    // ============================================================
+    (async function() {
+        const valid = await verifyToken();
+        if (!valid) { window.location.href = '/login.html'; return; }
+
+        iniciarAutoRefresh();
+
+        const container = document.getElementById('seccionesContainer');
+        cargarConfiguracion(container);
+
+        await cargarConfigUI();
+        await cargarServiciosUI();
+        await cargarTurnosUI();
+        await cargarPersonalidadIA();
+        await cargarPaisesUI();
+        await cargarHorariosUI();
+        await cargarPalabrasBaneadasUI();
+        await cargarRegistroConfigUI();
+        await cargarUbicacionSalonUI();
+        await cargarUsuariosUI();
+        await cargarTestimoniosUI();
+        await cargarSeguridadUI();
+        await cargarModalidadesUI();
+        await cargarRangoHorarioUI();
+
+        console.log('✅ Panel de administración cargado correctamente');
+        console.log('📋 Días configurados:', horariosConfig.dias);
+    })();
+</script>
+</body>
+</html>
